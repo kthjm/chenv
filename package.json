@@ -1,0 +1,39 @@
+{
+   "name": "chemg",
+   "version": "0.0.0",
+   "repository": "https://github.com/kthjm/chemg",
+   "author": "kthjm <toxictoxer@gmail.com>",
+   "license": "MIT",
+   "prettier": {
+      "tabWidth": 3,
+      "semi": false,
+      "singleQuote": true
+   },
+   "babel": {
+      "presets": [
+         [
+            "env",
+            {
+               "targets": {
+                  "node": "8"
+               }
+            }
+         ]
+      ]
+   },
+   "scripts": {
+      "format": "prettier --write **/*.js package.json",
+      "update": "node --require babel-register ./upload.js",
+      "node": "node --require babel-register"
+   },
+   "devDependencies": {
+      "babel-preset-env": "^1.6.0",
+      "babel-register": "^6.26.0",
+      "node-env-file": "^0.1.8",
+      "prettier": "^1.7.0"
+   },
+   "dependencies": {
+      "chrome-webstore-upload": "^0.2.1",
+      "dtz": "^0.0.2"
+   }
+}
