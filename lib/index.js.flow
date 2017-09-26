@@ -1,5 +1,6 @@
 // @flow
 import ora from 'ora'
+import { resolve } from 'path'
 import { getToken, insert, update, publish, type GetTokenQuery } from './got.js'
 import {
    createExpect,
@@ -17,9 +18,11 @@ type InsertItem$Arg = {
 export const insertItem = (arg: InsertItem$Arg): Promise<*> => {
    const { getTokenQuery, src } = arg
    checkGetTokenQuery(getTokenQuery)
-   const expect = createExpect(arg.spinner)
+   checkIfString(src,`src`)
 
-   return tokenAndZip(expect, getTokenQuery, src).then(({ token, zip }) =>
+   const source = resolve(src)
+   const expect = createExpect(arg.spinner)
+   return tokenAndZip(expect, getTokenQuery, source).then(({ token, zip }) =>
       expect(`insert item`, (): Promise<void> => insert(token, zip))
    )
 }
@@ -33,11 +36,14 @@ type UpdataItem$Arg = {
    spinner?: Spinner
 }
 export const updateItem = (arg: UpdataItem$Arg): Promise<*> => {
-   const { getTokenQuery, src, extension_id } = arg
+   const { getTokenQuery,extension_id,src } = arg
    checkGetTokenQuery(getTokenQuery)
-   const expect = createExpect(arg.spinner)
+   checkIfString(extension_id,`process.env.EXTENSION_ID`)
+   checkIfString(src,`src`)
 
-   return tokenAndZip(expect, getTokenQuery, src).then(({ token, zip }) =>
+   const source = resolve(src)
+   const expect = createExpect(arg.spinner)
+   return tokenAndZip(expect, getTokenQuery, source).then(({ token, zip }) =>
       expect(`update item`, (): Promise<void> =>
          update(token, zip, extension_id)
       ).then(
@@ -73,6 +79,12 @@ export const deleteItem = (arg: {
          spinner: arg.spinner
       })
    )
+}
+
+const checkIfString = (target: string, key: string): void => {
+    if(!target || typeof target !== 'string'){
+        throwMessage(key)
+    }
 }
 
 const deleteAll = ({ token, zip, ids, spinner }) =>
