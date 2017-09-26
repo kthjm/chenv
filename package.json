@@ -1,7 +1,8 @@
 {
    "name": "chenv",
-   "version": "0.0.1",
-   "description": "CLI tool to deploy chrome extension continuously by enviroment variables",
+   "version": "0.0.2",
+   "description":
+      "CLI tool to deploy chrome extension continuously by enviroment variables",
    "repository": "https://github.com/kthjm/chenv",
    "author": "kthjm <toxictoxer@gmail.com>",
    "main": "lib/index.js",

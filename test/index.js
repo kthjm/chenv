@@ -74,7 +74,7 @@ describe(`invalid CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN`, () => {
    it(`insertItem`, async () => {
       const insertItem = m.__get__(`insertItem`)
       try {
-         await insertItem({ getTokenQuery: cause })
+         await insertItem({ src: 'string', getTokenQuery: cause })
       } catch (err) {
          assert.deepStrictEqual(err.message, expect)
       }
@@ -83,7 +83,11 @@ describe(`invalid CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN`, () => {
    it(`updateItem`, async () => {
       const updateItem = m.__get__(`updateItem`)
       try {
-         await updateItem({ getTokenQuery: cause })
+         await updateItem({
+            src: 'string',
+            getTokenQuery: cause,
+            extension_id: 'string'
+         })
       } catch (err) {
          assert.deepStrictEqual(err.message, expect)
       }
@@ -99,7 +103,7 @@ describe(`invalid CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN`, () => {
    })
 })
 
-describe(`after getTokenQuery is valid`, () => {
+describe(`after getTokenQuery`, () => {
    const { CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN } = process.env
    const getTokenQuery = {
       client_id: CLIENT_ID,
@@ -110,7 +114,7 @@ describe(`after getTokenQuery is valid`, () => {
    describe(`invalid`, () => {
       it(`src === undefined via insertItem`, async () => {
          const cause = undefined
-         const expect = 'source is undefined'
+         const expect = 'error: missing required src'
 
          const insertItem = m.__get__(`insertItem`)
          try {
@@ -131,7 +135,8 @@ describe(`after getTokenQuery is valid`, () => {
          try {
             await updateItem({
                getTokenQuery,
-               src: cause
+               src: cause,
+               extension_id: 'string'
             })
          } catch (err) {
             const result = err.message.slice(0, expect.length)

@@ -42,7 +42,7 @@ export const tokenAndZip = async (
       getToken(getTokenQuery)
    )
    ;(expect: ExpectAfn<Readable>)
-   const zip: Readable = await expect(`generate zip stream`, () =>
+   const zip: Readable = await expect(`generate zip stream from ${src}`, () =>
       srcToZipStream(src)
    )
    return { token, zip }
