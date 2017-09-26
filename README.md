@@ -61,10 +61,9 @@ This file is parsed by [node-env-file](https://github.com/grimen/node-env-file).
 
 ### `update`
 
-
 [Updates an existing item](https://developer.chrome.com/webstore/webstore_api/items/update) require  `process.env.EXTENSION_ID`.
 
-##### options
+#### options
 ##### `-p, --publish`
 ##### `-t, --trusted-testers`
 
@@ -78,7 +77,7 @@ If `-p`, publish item after update directly.
 
 This is useful in cases such as deploying applications that have not yet deployed for the first time via ci service like [this](https://docs.travis-ci.com/user/deployment/script/).
 
-But using `deploy` is also dangerous because Chrome Web Store Dashboard doesn't allow developers to remove item from dashboard. So if you miss setting the item's id as `EXTENSION_ID` variable in environment after first deploy, and if the next `deploy`, you insert as new the same item to dashboard even though it has same name. And there is no way to remove it now. This is unpleasant.
+But using `deploy` is also dangerous because Chrome Web Store Dashboard doesn't allow developers to remove item from dashboard. So if you miss setting the item's id as `EXTENSION_ID` variable in environment after first `deploy`, and if the next `deploy`, you insert as new the same item to dashboard even though it has same name. And there is no way to remove it now. This is unpleasant.
 
 about:
 
@@ -88,9 +87,9 @@ about:
 
 ### `delete`
 
-`delete` update item as deleted style.
+`delete` update item as deleted style. `<id>` can take multiple by a comma.
 
-This means not to delete item but change exist item's name and version.
+"deleted style" means not to delete item but change exist item's name and version.
 
 To distinguish between "real" and "deleted" extensions like this:
 
