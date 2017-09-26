@@ -1,16 +1,27 @@
 #!/usr/bin/env node
 const program = require('commander')
 const ora = require('ora')
-const { bgBlue } = require('chalk')
+const { bgBlue, cyan, magenta } = require('chalk')
 const envParse = require('node-env-file')
 const { insertItem, updateItem, deleteItem } = require('./lib')
 
 const spinner = ora()
 
+const envWarn = ({ message }) =>
+   console.warn(
+      magenta(`
+ warn: ${message}
+`)
+   )
+
 const extractEnv = env =>
    Promise.resolve().then(() => {
       if (env) {
-         envParse(env)
+         try {
+            envParse(env)
+         } catch (err) {
+            envWarn(err)
+         }
       }
 
       const {
@@ -34,8 +45,11 @@ program.version(require('./package.json').version)
 
 program
    .command(`insert <source>`)
-   .description('insert item that not yet exist')
-   .option('-e, --env-file <DOTENV_FILE>', 'dotenv flle')
+   .description('Insert item that not yet exist')
+   .option(
+      '-e, --env-file <dotenv>',
+      'Path to dotenv file store environment variables'
+   )
    .action((src, options) =>
       extractEnv(options.envFile)
          .then(({ getTokenQuery }) =>
@@ -50,10 +64,13 @@ program
 
 program
    .command(`update <source>`)
-   .description('update item that already exist')
-   .option('-e, --env-file <DOTENV_FILE>', 'dotenv flle')
-   .option('-p, --publish', `publish directly`)
-   .option('-t, --trusted-testers', `set publishTarget "trustedTesters"`)
+   .description('Update item that already exist')
+   .option(
+      '-e, --env-file <dotenv>',
+      'Path to dotenv file store environment variables'
+   )
+   .option('-p, --publish', `Publish item directly after update`)
+   .option('-t, --trusted-testers', `Set publishTarget "trustedTesters"`)
    .action((src, options) =>
       extractEnv(options.envFile)
          .then(({ getTokenQuery, extension_id }) =>
@@ -72,9 +89,12 @@ program
 program
    .command(`deploy <source>`)
    .description('!process.env.EXTENSION_ID ? insert : update')
-   .option('-e, --env-file <DOTENV_FILE>', 'dotenv flle')
-   .option('-p, --publish', `publish directly after "update" (not "insert")`)
-   .option('-t, --trusted-testers', `set publishTarget "trustedTesters"`)
+   .option(
+      '-e, --env-file <dotenv>',
+      'Path to dotenv file store environment variables'
+   )
+   .option('-p, --publish', `Publish directly after update (not insert)`)
+   .option('-t, --trusted-testers', `Set publishTarget "trustedTesters"`)
    .action((src, options) =>
       extractEnv(options.envFile)
          .then(({ getTokenQuery, extension_id }) => {
@@ -101,29 +121,39 @@ program
    )
 
 program
-   .command(`delete`)
-   .description('update item as deleted style')
-   .option('-e, --env-file <DOTENV_FILE>', 'dotenv flle')
-   .option('--id <ID1, ID2>', `extension id to delete`)
-   .action(options =>
+   .command(`delete <id>`)
+   .description('Update items as deleted style')
+   .option(
+      '-e, --env-file <dotenv>',
+      'Path to dotenv file store environment variables'
+   )
+   .action((id, options) =>
       extractEnv(options.envFile)
-         .then(({ getTokenQuery, extension_id }) => {
-            const { id } = options
-
-            if (!extension_id && !id) {
-               throw new Error(
-                  `error: missing required extension_id (process.env | option --id)`
-               )
-            }
-
-            return deleteItem({
+         .then(({ getTokenQuery }) =>
+            deleteItem({
                getTokenQuery,
-               deleteExtensions: extension_id ? [extension_id] : id.split(','),
+               deleteExtensions: id.split(','),
                spinner
             })
-         })
+         )
          .catch(errorHandler)
    )
+
+program.on('--help', function() {
+   console.log('')
+   console.log('  Examples:')
+   console.log('')
+   console.log('    $ chenv deploy ./app -p')
+   console.log(``)
+   console.log(
+      `      => process.env.EXTENSION_ID ? update(./app).then(publish) : insert(./app)`
+   )
+   console.log(``)
+   console.log('    $ chenv delete id1,id2 -e .env')
+   console.log('')
+   console.log(`      => update [id1,id2] as "deleted style"(not deleted)`)
+   console.log('')
+})
 
 program.parse(process.argv)
 if (!program.args.length) {
@@ -134,8 +164,10 @@ function errorHandler(err) {
    if (typeof spinner === 'object' && spinner.text) {
       spinner.fail()
    }
-   console.error(`
+   console.error(
+      cyan(`
  ${err.message}
    `)
+   )
    process.exit(1)
 }

@@ -142,11 +142,11 @@ describe(`after getTokenQuery is valid`, () => {
       it(`!src.inclides(manifest.json) via insertItem`, async () => {
          const cause = './test/withoutManifest'
 
-        //  const os = process.env.OS
-        //  const expect =
-        //     os && os.toLowerCase().includes(`windows`)
-        //        ? `Invalid package. Please make sure it is a valid zip file and the file manifest.json is at the root directory of the zip package.`
-        //        : `No manifest found in package. Please make sure to put manifest.json at the root directory of the zip package.`
+         //  const os = process.env.OS
+         //  const expect =
+         //     os && os.toLowerCase().includes(`windows`)
+         //        ? `Invalid package. Please make sure it is a valid zip file and the file manifest.json is at the root directory of the zip package.`
+         //        : `No manifest found in package. Please make sure to put manifest.json at the root directory of the zip package.`
 
          const insertItem = m.__get__(`insertItem`)
          try {
