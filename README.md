@@ -1,5 +1,7 @@
 # chenv
 
+[![Coverage Status](https://coveralls.io/repos/github/kthjm/chenv/badge.svg?branch=master)](https://coveralls.io/github/kthjm/chenv?branch=master)
+
 **chrome extension manager**
 
 https://developer.chrome.com/webstore/webstore_api/items#resource
