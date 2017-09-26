@@ -1,4 +1,4 @@
-app/
+flow-typed/
 # Logs
 logs
 *.log
