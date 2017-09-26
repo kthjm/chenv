@@ -1,5 +1,6 @@
 # chenv
-
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Build Status](https://travis-ci.org/kthjm/chenv.svg?branch=master)](https://travis-ci.org/kthjm/chenv)
 [![Coverage Status](https://coveralls.io/repos/github/kthjm/chenv/badge.svg?branch=master)](https://coveralls.io/github/kthjm/chenv?branch=master)
 
 **chrome extension manager**
