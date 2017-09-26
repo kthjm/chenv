@@ -72,7 +72,7 @@ type ThrowByUplodStateFn = (body: {
 }) => void
 
 const throwByUplodState: ThrowByUplodStateFn = ({ uploadState, itemError }) => {
-   if (uploadState !== 'SUCCESS') {
+   if (uploadState !== 'SUCCESS' && Array.isArray(itemError)) {
       throw new Error(itemError[0].error_detail)
    }
    return

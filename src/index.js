@@ -20,9 +20,8 @@ export const insertItem = (arg: InsertItem$Arg): Promise<*> => {
    checkGetTokenQuery(getTokenQuery)
    checkIfString(src, `src`)
 
-   const source = resolve(src)
    const expect = createExpect(arg.spinner)
-   return tokenAndZip(expect, getTokenQuery, source).then(({ token, zip }) =>
+   return tokenAndZip(expect, getTokenQuery, src).then(({ token, zip }) =>
       expect(`insert item`, (): Promise<void> => insert(token, zip))
    )
 }
@@ -41,9 +40,8 @@ export const updateItem = (arg: UpdataItem$Arg): Promise<*> => {
    checkIfString(extension_id, `process.env.EXTENSION_ID`)
    checkIfString(src, `src`)
 
-   const source = resolve(src)
    const expect = createExpect(arg.spinner)
-   return tokenAndZip(expect, getTokenQuery, source).then(({ token, zip }) =>
+   return tokenAndZip(expect, getTokenQuery, src).then(({ token, zip }) =>
       expect(`update item`, (): Promise<void> =>
          update(token, zip, extension_id)
       ).then(
