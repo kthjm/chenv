@@ -18,7 +18,7 @@ type InsertItem$Arg = {
 export const insertItem = (arg: InsertItem$Arg): Promise<*> => {
    const { getTokenQuery, src } = arg
    checkGetTokenQuery(getTokenQuery)
-   checkIfString(src,`src`)
+   checkIfString(src, `src`)
 
    const source = resolve(src)
    const expect = createExpect(arg.spinner)
@@ -36,10 +36,10 @@ type UpdataItem$Arg = {
    spinner?: Spinner
 }
 export const updateItem = (arg: UpdataItem$Arg): Promise<*> => {
-   const { getTokenQuery,extension_id,src } = arg
+   const { getTokenQuery, extension_id, src } = arg
    checkGetTokenQuery(getTokenQuery)
-   checkIfString(extension_id,`process.env.EXTENSION_ID`)
-   checkIfString(src,`src`)
+   checkIfString(extension_id, `process.env.EXTENSION_ID`)
+   checkIfString(src, `src`)
 
    const source = resolve(src)
    const expect = createExpect(arg.spinner)
@@ -82,9 +82,9 @@ export const deleteItem = (arg: {
 }
 
 const checkIfString = (target: string, key: string): void => {
-    if(!target || typeof target !== 'string'){
-        throwMessage(key)
-    }
+   if (!target || typeof target !== 'string') {
+      throwMessage(key)
+   }
 }
 
 const deleteAll = ({ token, zip, ids, spinner }) =>
