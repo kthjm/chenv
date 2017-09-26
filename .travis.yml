@@ -1,9 +1,13 @@
 language: node_js
 node_js:
 - '8'
-# deploy:
-#     provider: script
-#     script: yarn upload
-#     skip_cleanup: true
-#     on:
-#         tags: true
+after_success:
+- yarn coverage
+deploy:
+  provider: npm
+  email: toxictoxer@gmail.com
+  api_key:
+    secure: Lan2ilNan4sfREBl2BzjtdxIJQXgJ309sczWckVr72Pnzb0pAHovaVnmEehLgGDr5nau0E3kTCQ3XArGdOwmHwm8o6NwFTxkMSZVU58rcnYLOY+PodtcjXCko8kOqS5lNHLE0WilQ3htdvLXo1mvEeP+GcoOX/N4Od/px3ST7e11j8XtrF3Sb01w6MUu6umKQo/To4Hf6eEUDrazFGdr+8f4hRZlrdIRBFzw5OkZzq0Yvv+V5K2ngpwnvWBAiYMw84WQc95df4SPIp2tcxlACW0nIwfPckjQoQLnGuP8FstmGJFB7o/VUJwIhD8kSyp2X2ZCKk8ybdWufweEr8XKfxcRsVAitNXnYquRJsK670veEhYVqtdGH9dFlKnbt3hW4Prw3Dt0omJD4SeOCjVbu9YOM5I+9Serk2on4EIPD5dig85czYltShOmh62sClma+YK3E5NQDfSJuOYzc4KjkRrnwtjsUU9GuroJy0XTJZEDNBBDtoIP84NhHyNuYInL77vDgBrKvFEXnYekmoO2NW4zI+qp0ekllIk5pt4idvgj9t8B7bM/zb/pVVkWrjr9YmO96Xid71c+xezpBcoa96b149yaWdxkv88tOujoIIDohfG4K8O4i+j+/T/dh/R4OJUPK5W/Ga1WYprOgt2csQLY3iqtVDYnJDcG/yskp+A=
+  on:
+    tags: true
+    repo: kthjm/chenv
