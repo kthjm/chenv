@@ -48,7 +48,7 @@ Usage: chenv [options] [command]
 All commands have `-e, --env-file` option that path to dotenv file store 3 variables above.
 
 dotenv file like:
-```.env
+```env
 CLIENT_ID=XXXXXXXX
 CLIENT_SECRET=XXXXXXXX
 REFRESH_TOKEN=XXXXXXXX
