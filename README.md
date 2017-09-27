@@ -5,10 +5,12 @@
 
 A CLI tool to deploy chrome extension continuously by enviroment variables.
 
+There is no need to touch zip file anymore with chenv.
+
 <!-- ![](https://nysanda.files.wordpress.com/2014/11/shaolinwoodenmen_hongkonglegends_movie_29.png) -->
 
 ## Setup
-At first, you need to get 3 acccess keys via `Chrome Web Store API`.
+At first, you need to get 3 acccess keys via Chrome Web Store API.
 * `CLIENT_ID`
 * `CLIENT_SECRET`
 * `REFRESH_TOKEN`
@@ -39,10 +41,11 @@ Usage: chenv [options] [command]
     delete [options] <id>      Update items as deleted style
 ```
 
-`source` should be not `.zip` but just a folder.
+`<source>` should be not `.zip` but just a folder.
+
+## Commands
 
 All commands have `-e, --env-file` option that path to dotenv file store 3 variables above.
-
 
 dotenv file like:
 ```.env
@@ -53,44 +56,57 @@ EXTENSION_ID=XXXXXXXX
 ```
 This file is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
 
-## Commands
+### insert
 
-### `insert`
+[Inserts a new item](https://developer.chrome.com/webstore/webstore_api/items/insert) has option only `-e`.
 
-[Inserts a new item](https://developer.chrome.com/webstore/webstore_api/items/insert) has only option `-e`.
+### update
 
-### `update`
-
-[Updates an existing item](https://developer.chrome.com/webstore/webstore_api/items/update) require  `process.env.EXTENSION_ID`.
+[Updates an existing item](https://developer.chrome.com/webstore/webstore_api/items/update) requires `process.env.EXTENSION_ID`.
 
 #### options
-##### `-p, --publish`
-##### `-t, --trusted-testers`
+`-p, --publish`  
+`-t, --trusted-testers`
 
 Both are about [Items:Publish](https://developer.chrome.com/webstore/webstore_api/items/publish).
 
-If `-p`, publish item after update directly.
+If `-p`, The item will be published directly after update.
 
-### `deploy`
+### deploy
 
 `deploy` works as `!process.env.EXTENSION_ID ? insert : update`.
 
-This is useful in cases such as deploying applications that have not yet deployed for the first time via ci service like [this](https://docs.travis-ci.com/user/deployment/script/).
+This is useful in cases such as deploying applications that have not yet deployed via ci service.
+
+If you use [travis's script deployment](https://docs.travis-ci.com/user/deployment/script/), setting like:
+
+.travis.yml
+```yml
+deploy:
+  provider: script
+  script: yarn deploy
+  skip_cleanup: true
+  on:
+    tags: true
+```
+package.json
+```json
+scripts: {
+  "deploy": "node ./node_modules/chenv/chenv.js deploy ./app -p"
+}
+```
+The way that refering chenv.js via `node_modules/.bin` will be [failed](https://github.com/travis-ci/travis-ci/issues/8505) in travis's script deployment.
 
 But using `deploy` is also dangerous because Chrome Web Store Dashboard doesn't allow developers to remove item from dashboard. So if you miss setting the item's id as `EXTENSION_ID` variable in environment after first `deploy`, and if the next `deploy`, you insert as new the same item to dashboard even though it has same name. And there is no way to remove it now. This is unpleasant.
-
-about:
 
 * [Chrome Web Store Developer Dashboard - Delete Extensions](https://groups.google.com/a/chromium.org/forum/#!topic/chromium-apps/4lu5AkM6bZw)
 * [Remove app from Developer Dashboard](https://groups.google.com/a/chromium.org/forum/m/#!topic/chromium-apps/Orx2vQD-PSk)
 
 
-### `delete`
+### delete
 
-`delete` update item as deleted style. `<id>` can take multiple by a comma.
-
+`delete` update item as deleted style. argument `<id>` can take multiple by a comma.
 "deleted style" means not to delete item but change exist item's name and version.
-
 To distinguish between "real" and "deleted" extensions like this:
 
 ![](https://i.gyazo.com/94b02957e23015795a13ef991e600589.png)
