@@ -41,7 +41,7 @@ Usage: chenv [options] [command]
     delete [options] <id>      Update items as deleted style
 ```
 
-`<source>` should be not `.zip` but just a folder.
+`<source>` should be just a folder contain `manifest.json` not zip file.
 
 ## Commands
 
@@ -52,7 +52,7 @@ dotenv file like:
 CLIENT_ID=XXXXXXXX
 CLIENT_SECRET=XXXXXXXX
 REFRESH_TOKEN=XXXXXXXX
-EXTENSION_ID=XXXXXXXX
+EXTENSION_ID=XXXXXXXX # after insert
 ```
 This file is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
 
