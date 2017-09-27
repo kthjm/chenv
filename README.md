@@ -68,13 +68,11 @@ This file is parsed by [node-env-file](https://github.com/grimen/node-env-file).
 `-p, --publish`  
 `-t, --trusted-testers`
 
-Both are about [Items:Publish](https://developer.chrome.com/webstore/webstore_api/items/publish).
-
-If `-p`, The item will be published directly after update.
+Both are about [Items:Publish](https://developer.chrome.com/webstore/webstore_api/items/publish). If `-p`, The item will be published directly after update.
 
 ### deploy
 
-`deploy` works as `!process.env.EXTENSION_ID ? insert : update`.
+Works as `!process.env.EXTENSION_ID ? insert : update`.
 
 This is useful in cases such as deploying applications that have not yet deployed via ci service.
 
