@@ -5,7 +5,7 @@
 
 A CLI tool to deploy chrome extension continuously by enviroment variables.
 
-There is no need to touch zip file anymore with chenv.
+No longer need to touch zip file in chrome extension development.
 
 <!-- ![](https://nysanda.files.wordpress.com/2014/11/shaolinwoodenmen_hongkonglegends_movie_29.png) -->
 
