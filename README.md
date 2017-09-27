@@ -15,7 +15,7 @@ At first, you need to get 3 acccess keys via Chrome Web Store API.
 * `CLIENT_SECRET`
 * `REFRESH_TOKEN`
 
-[Here](https://developer.chrome.com/webstore/using_webstore_api) is how to get them that are used as environment variables in `chenv`.
+[Here](https://developer.chrome.com/webstore/using_webstore_api) is how to get them that are used as environment variables in chenv.
 
 ## Installation
 ```shell
