@@ -5,7 +5,7 @@
 
 A CLI tool to deploy chrome extension continuously by enviroment variables.
 
-No longer need to touch zip file in chrome extension development.
+No longer need to touch zip file in development.
 
 <!-- ![](https://nysanda.files.wordpress.com/2014/11/shaolinwoodenmen_hongkonglegends_movie_29.png) -->
 
@@ -20,6 +20,7 @@ At first, you need to get 3 acccess keys via Chrome Web Store API.
 After getting above 3 keys, write them to dotenv file then:
 ```shell
 yarn add -D chenv
+
 yarn chenv deploy app -e .env
 ```
 `app` has deployed (still not published).
@@ -57,7 +58,7 @@ CLIENT_SECRET=XXXXXXXX
 REFRESH_TOKEN=XXXXXXXX
 EXTENSION_ID=XXXXXXXX # after insert
 ```
-This file is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
+This is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
 
 ### insert
 [Inserts a new item](https://developer.chrome.com/webstore/webstore_api/items/insert) has option only `-e`.
