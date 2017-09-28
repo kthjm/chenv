@@ -17,10 +17,13 @@ At first, you need to get 3 acccess keys via Chrome Web Store API.
 
 [Here](https://developer.chrome.com/webstore/using_webstore_api) is how to get them that are used as environment variables in chenv.
 
-## Installation
+After getting above 3 keys, write them to dotenv file then:
 ```shell
 yarn add -D chenv
+yarn chenv deploy app -e .env
 ```
+`app` has deployed (but still not published).
+
 ## Usage
 
 ```shell
@@ -103,7 +106,7 @@ But using `deploy` is also dangerous because Chrome Web Store Dashboard doesn't 
 
 ### delete
 
-`delete` update item as deleted style. argument `<id>` can take multiple by a comma.
+Update item as deleted style. argument `<id>` can take multiple by a comma.
 "deleted style" means not to delete item but change exist item's name and version.
 To distinguish between "real" and "deleted" extensions like this:
 
