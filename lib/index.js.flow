@@ -1,6 +1,5 @@
 // @flow
 import ora from 'ora'
-import { resolve } from 'path'
 import { getToken, insert, update, publish, type GetTokenQuery } from './got.js'
 import {
    createExpect,
