@@ -5,7 +5,7 @@
 
 A CLI tool to deploy chrome extension continuously by enviroment variables.
 
-No longer need to touch zip file in chrome extension development.
+No longer need to touch zip file in development.
 
 <!-- ![](https://nysanda.files.wordpress.com/2014/11/shaolinwoodenmen_hongkonglegends_movie_29.png) -->
 
@@ -17,10 +17,14 @@ At first, you need to get 3 acccess keys via Chrome Web Store API.
 
 [Here](https://developer.chrome.com/webstore/using_webstore_api) is how to get them that are used as environment variables in chenv.
 
-## Installation
+After getting above 3 keys, write them to dotenv file then:
 ```shell
 yarn add -D chenv
+
+yarn chenv deploy app -e .env
 ```
+`app` has deployed (still not published).
+
 ## Usage
 
 ```shell
@@ -54,27 +58,21 @@ CLIENT_SECRET=XXXXXXXX
 REFRESH_TOKEN=XXXXXXXX
 EXTENSION_ID=XXXXXXXX # after insert
 ```
-This file is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
+This is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
 
 ### insert
-
 [Inserts a new item](https://developer.chrome.com/webstore/webstore_api/items/insert) has option only `-e`.
-
 ### update
-
 [Updates an existing item](https://developer.chrome.com/webstore/webstore_api/items/update) requires `process.env.EXTENSION_ID`.
-
 #### options
-`-p, --publish`  
-`-t, --trusted-testers`
+`-p, --publish`, `-t, --trusted-testers`
 
 Both are about [Items:Publish](https://developer.chrome.com/webstore/webstore_api/items/publish). If `-p`, The item will be published directly after update.
-
 ### deploy
 
 Works as `!process.env.EXTENSION_ID ? insert : update`.
 
-This is useful in cases such as deploying applications that have not yet deployed via ci service.
+This is useful in cases such as managing applications via ci tool continuously from state not yet deployed.
 
 If you use [travis's script deployment](https://docs.travis-ci.com/user/deployment/script/), setting like:
 
@@ -103,7 +101,7 @@ But using `deploy` is also dangerous because Chrome Web Store Dashboard doesn't 
 
 ### delete
 
-`delete` update item as deleted style. argument `<id>` can take multiple by a comma.
+Update item as deleted style. argument `<id>` can take multiple by a comma.
 "deleted style" means not to delete item but change exist item's name and version.
 To distinguish between "real" and "deleted" extensions like this:
 
