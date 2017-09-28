@@ -66,9 +66,8 @@ This file is parsed by [node-env-file](https://github.com/grimen/node-env-file).
 ### update
 
 [Updates an existing item](https://developer.chrome.com/webstore/webstore_api/items/update) requires `process.env.EXTENSION_ID`.
-
 #### options
-`-p, --publish`  
+`-p, --publish`
 `-t, --trusted-testers`
 
 Both are about [Items:Publish](https://developer.chrome.com/webstore/webstore_api/items/publish). If `-p`, The item will be published directly after update.
@@ -77,7 +76,7 @@ Both are about [Items:Publish](https://developer.chrome.com/webstore/webstore_ap
 
 Works as `!process.env.EXTENSION_ID ? insert : update`.
 
-This is useful in cases such as deploying applications that have not yet deployed via ci service.
+This is useful in cases such as managing applications via ci tool continuously from state not yet deployed.
 
 If you use [travis's script deployment](https://docs.travis-ci.com/user/deployment/script/), setting like:
 
