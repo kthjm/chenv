@@ -1,6 +1,6 @@
 {
    "name": "chenv",
-   "version": "0.0.4",
+   "version": "0.0.5",
    "description":
       "CLI tool to deploy chrome extension continuously by enviroment variables",
    "repository": "https://github.com/kthjm/chenv",
