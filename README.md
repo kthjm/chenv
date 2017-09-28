@@ -22,7 +22,7 @@ After getting above 3 keys, write them to dotenv file then:
 yarn add -D chenv
 yarn chenv deploy app -e .env
 ```
-`app` has deployed (but still not published).
+`app` has deployed (still not published).
 
 ## Usage
 
@@ -60,18 +60,13 @@ EXTENSION_ID=XXXXXXXX # after insert
 This file is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
 
 ### insert
-
 [Inserts a new item](https://developer.chrome.com/webstore/webstore_api/items/insert) has option only `-e`.
-
 ### update
-
 [Updates an existing item](https://developer.chrome.com/webstore/webstore_api/items/update) requires `process.env.EXTENSION_ID`.
 #### options
-`-p, --publish`
-`-t, --trusted-testers`
+`-p, --publish`, `-t, --trusted-testers`
 
 Both are about [Items:Publish](https://developer.chrome.com/webstore/webstore_api/items/publish). If `-p`, The item will be published directly after update.
-
 ### deploy
 
 Works as `!process.env.EXTENSION_ID ? insert : update`.
