@@ -1,12 +1,9 @@
 import assert from 'assert'
 import rewire from 'rewire'
 import sinon from 'sinon'
-import envParse from 'node-env-file'
+import dotenv from 'dotenv'
 
-// this is used for local.
-// setting {raise: false} is to avoid error in ci
-// because dotenv file is ignore by git.
-envParse('./test/.env', { raise: false })
+dotenv.config({ path: './test/.env' })
 
 const m = rewire('../src')
 

@@ -2,7 +2,7 @@
 const program = require('commander')
 const ora = require('ora')
 const { bgBlue, cyan, magenta } = require('chalk')
-const envParse = require('node-env-file')
+const dotenv = require('dotenv')
 const { insertItem, updateItem, deleteItem } = require('./lib')
 
 const spinner = ora()
@@ -14,13 +14,12 @@ const envWarn = ({ message }) =>
 `)
    )
 
-const extractEnv = env =>
+const extractEnv = envPath =>
    Promise.resolve().then(() => {
-      if (env) {
-         try {
-            envParse(env)
-         } catch (err) {
-            envWarn(err)
+      if (envPath) {
+         const { error } = dotenv.config({ path: envPath })
+         if (error) {
+            envWarn(result.error)
          }
       }
 

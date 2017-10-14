@@ -51,14 +51,14 @@ Usage: chenv [options] [command]
 
 All commands have `-e, --env-file` option that path to dotenv file store 3 variables above.
 
-dotenv file like:
+like:
 ```env
 CLIENT_ID=XXXXXXXX
 CLIENT_SECRET=XXXXXXXX
 REFRESH_TOKEN=XXXXXXXX
 EXTENSION_ID=XXXXXXXX # after insert
 ```
-This is parsed by [node-env-file](https://github.com/grimen/node-env-file). If not exist in process cause only warning without error.
+parsed by [dotenv](https://github.com/motdotla/dotenv). If not exist in process cause only warning without error.
 
 ### insert
 [Inserts a new item](https://developer.chrome.com/webstore/webstore_api/items/insert) has option only `-e`.
