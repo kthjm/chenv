@@ -1140,6 +1140,10 @@ diff@^3.1.0:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.3.1.tgz#aa8567a6eed03c531fc89d3f711cd0e5259dec75"
 
+dotenv@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-4.0.0.tgz#864ef1379aced55ce6f95debecdce179f7a0cd1d"
+
 dtz@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/dtz/-/dtz-1.0.0.tgz#6294fb58ef7c03a244bfcb8af5a2466de7155837"
@@ -2452,10 +2456,6 @@ nise@^1.0.1:
     lolex "^1.6.0"
     path-to-regexp "^1.7.0"
     text-encoding "^0.6.4"
-
-node-env-file@^0.1.8:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/node-env-file/-/node-env-file-0.1.8.tgz#fccb7b050f735b5a33da9eb937cf6f1ab457fb69"
 
 node-pre-gyp@^0.6.36:
   version "0.6.37"
