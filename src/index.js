@@ -66,15 +66,14 @@ export const deleteItem = (arg: {
    checkGetTokenQuery(getTokenQuery)
    const expect = createExpect(arg.spinner)
    const zip = extensionZip(deleteManifest)
-   return expect(`fetch access token`, () =>
-      getToken(getTokenQuery)
-   ).then((token: string) =>
-      deleteAll({
-         token,
-         zip,
-         ids: deleteExtensions,
-         spinner: arg.spinner
-      })
+   return expect(`fetch access token`, () => getToken(getTokenQuery)).then(
+      (token: string) =>
+         deleteAll({
+            token,
+            zip,
+            ids: deleteExtensions,
+            spinner: arg.spinner
+         })
    )
 }
 
