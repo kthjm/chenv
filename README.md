@@ -4,7 +4,6 @@
 [![npm](https://img.shields.io/npm/dm/chenv.svg?style=flat-square)](https://www.npmjs.com/package/chenv)
 [![Build Status](https://img.shields.io/travis/kthjm/chenv.svg?style=flat-square)](https://travis-ci.org/kthjm/chenv)
 [![Coverage Status](https://img.shields.io/codecov/c/github/kthjm/chenv.svg?style=flat-square)](https://codecov.io/github/kthjm/chenv)
-[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ![](https://nysanda.files.wordpress.com/2014/11/shaolinwoodenmen_hongkonglegends_movie_29.png)
 
