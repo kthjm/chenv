@@ -1,9 +1,6 @@
 import assert from 'assert'
 import rewire from 'rewire'
 import sinon from 'sinon'
-import dotenv from 'dotenv'
-
-dotenv.config({ path: './test/.env' })
 
 const m = rewire('../src')
 

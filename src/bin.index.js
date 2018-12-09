@@ -1,9 +1,8 @@
-#!/usr/bin/env node
 const program = require('commander')
 const ora = require('ora')
 const { bgBlue, cyan, magenta } = require('chalk')
 const dotenv = require('dotenv')
-const { insertItem, updateItem, deleteItem } = require('./lib')
+const { insertItem, updateItem, deleteItem } = require('..')
 
 const spinner = ora()
 
@@ -40,7 +39,7 @@ const extractEnv = envPath =>
     }
   })
 
-program.version(require('./package.json').version)
+program.version(require('../package.json').version)
 
 program
   .command(`insert <source>`)
