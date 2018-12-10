@@ -1,4 +1,3 @@
-flow-typed/
 src/
 test/
 .flowconfig
@@ -6,4 +5,5 @@ test/
 .travis.yml
 babel.config.js
 rollup.config.js
+types.js
 yarn.lock

@@ -4,8 +4,8 @@
   "description": "CLI to deploy chrome extension continuously by enviroment variables",
   "repository": "https://github.com/kthjm/chenv",
   "author": "kthjm <toxictoxer@gmail.com>",
-  "main": "dist/index.js",
-  "bin": "bin/chenv.js",
+  "main": ".dist/index.js",
+  "bin": ".bin/chenv.js",
   "license": "MIT",
   "keywords": [
     "chrome",
@@ -29,19 +29,22 @@
     "instrument": false
   },
   "scripts": {
+    "nod": "cross-env BABEL_ENV=just node -r @babel/register",
+    "chenv": "yarn nod bin",
     "type": "flow",
-    "test": "cross-env BABEL_ENV=test nyc mocha -t 10000",
-    "prebuild": "run-s type test",
+    "test": "cross-env BABEL_ENV=test nyc mocha",
     "build": "cross-env BABEL_ENV=build rollup -c",
+    "test:ci": "run-s type test",
+    "build:ci": "run-s type test build",
     "coverage": "nyc report --reporter=lcov && codecov"
   },
   "dependencies": {
     "commander": "^2.19.0",
     "dotenv": "^6.2.0",
     "dtz": "^1.0.2",
+    "enquirer": "^2.1.1",
     "got": "^9.3.2",
-    "jszip": "^3.1.4",
-    "ora": "^3.0.0"
+    "jszip": "^3.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.2.0",

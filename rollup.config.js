@@ -30,7 +30,7 @@ export default [
     input: 'src/index.js',
     output: {
       format: 'cjs',
-      file: 'dist/index.js',
+      file: '.dist/index.js',
       exports: 'named'
     },
     plugins: [
@@ -41,11 +41,14 @@ export default [
     ]
   },
   {
-    input: 'src/bin.index.js',
-    external: ['..'],
+    input: 'bin/index.js',
+    external: [
+      '..',
+      '../package.json'
+    ],
     output: {
       format: 'cjs',
-      file: 'bin/chenv.js',
+      file: '.bin/chenv.js',
       banner: shebang
     },
     plugins: [

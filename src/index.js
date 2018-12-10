@@ -1,104 +1,99 @@
 // @flow
-import ora from 'ora'
-import { getToken, insert, update, publish, type GetTokenQuery } from './got.js'
+export * from './token'
+export * from './item'
+
+import dtz from 'dtz'
+import Zip from 'jszip'
+import { asserts } from './util'
+import { getAccessToken } from './token'
 import {
-  createExpect,
-  tokenAndZip,
-  extensionZip,
-  type Spinner
-} from './utils.js'
-import { createManifest, deleteManifest } from './manifest.js'
+  insertItem,
+  updateItem,
+  publishItem,
+  checkItem,
+} from './item'
 
-type InsertItem$Arg = {
-  src: string,
-  getTokenQuery: GetTokenQuery,
-  spinner?: Spinner
-}
-export const insertItem = (arg: InsertItem$Arg): Promise<*> => {
-  const { getTokenQuery, src } = arg
-  checkGetTokenQuery(getTokenQuery)
-  checkIfString(src, `src`)
-
-  const expect = createExpect(arg.spinner)
-  return tokenAndZip(expect, getTokenQuery, src).then(({ token, zip }) =>
-    expect(`insert item`, (): Promise<void> => insert(token, zip))
-  )
+const manifestMap = {
+  ['remove']: {
+    manifest_version: 2,
+    name: '(removed)',
+    version: '0',
+  },
+  ['create']: {
+    manifest_version: 2,
+    name: '',
+    version: '0.0.0',
+  },
 }
 
-type UpdataItem$Arg = {
-  src: string,
-  getTokenQuery: GetTokenQuery,
-  extension_id: string,
-  publish?: boolean,
-  trustedTesters?: boolean,
-  spinner?: Spinner
-}
-export const updateItem = (arg: UpdataItem$Arg): Promise<*> => {
-  const { getTokenQuery, extension_id, src } = arg
-  checkGetTokenQuery(getTokenQuery)
-  checkIfString(extension_id, `process.env.EXTENSION_ID`)
-  checkIfString(src, `src`)
-
-  const expect = createExpect(arg.spinner)
-  return tokenAndZip(expect, getTokenQuery, src).then(({ token, zip }) =>
-    expect(`update item`, (): Promise<void> =>
-      update(token, zip, extension_id)
-    ).then(
-      () =>
-        arg.publish &&
-        expect(`publish item`, () =>
-          publish(
-            token,
-            extension_id,
-            arg.trustedTesters ? 'trustedTesters' : 'default'
-          )
-        )
-    )
-  )
+const zipApp = async (src) => {
+  asserts(src, `[chenv] src is ${src}`)
+  const zip = await dtz(src)
+  return zip.generateNodeStream()
 }
 
-export const deleteItem = (arg: {
-  getTokenQuery: GetTokenQuery,
-  deleteExtensions: Array<string>,
-  spinner?: Spinner
-}): Promise<*> => {
-  const { getTokenQuery, deleteExtensions } = arg
-  checkGetTokenQuery(getTokenQuery)
-  const expect = createExpect(arg.spinner)
-  const zip = extensionZip(deleteManifest)
-  return expect(`fetch access token`, () => getToken(getTokenQuery)).then(
-    (token: string) =>
-      deleteAll({
-        token,
-        zip,
-        ids: deleteExtensions,
-        spinner: arg.spinner
-      })
-  )
+const zipEmpty = (manifestJson): JSZip => {
+  const zip = new Zip()
+  zip.file('manifest.json', JSON.stringify(manifestJson))
+  return zip.generateNodeStream()
 }
 
-const checkIfString = (target: string, key: string): void => {
-  if (!target || typeof target !== 'string') {
-    throwMessage(key)
+export default class Chenv {
+  constructor({ client_id, client_secret, refresh_token } = {}) {
+    asserts(client_id, `client_id is required`)
+    asserts(client_secret, `client_secret is required`)
+    asserts(refresh_token, `refresh_token is required`)
+    this.token = undefined
+    this.credentials = { client_id, client_secret, refresh_token }
   }
-}
-
-const deleteAll = ({ token, zip, ids, spinner }) =>
-  Promise.all(
-    ids.map(id => {
-      const stream = zip.generateNodeStream()
-      const promise = update(token, stream, id)
-      return spinner ? ora.promise(promise, `delete ${id}`) : promise
+  
+  setToken() {
+    return this.token
+    ? false
+    : getAccessToken(this.credentials).then(token => this.token = token)
+  }
+  
+  async insertItem(src) {
+    await this.setToken()
+    return insertItem({
+      token: this.token,
+      body: await zipApp(src)
     })
-  )
-
-const checkGetTokenQuery = query =>
-  ['client_id', 'client_secret', 'refresh_token'].forEach(key => {
-    if (!query[key]) {
-      throwMessage(`process.env.${key.toUpperCase()}`)
-    }
-  })
-
-const throwMessage = message => {
-  throw new Error(`error: missing required ${message}`)
+  }
+  
+  async updateItem(id, src) {
+    await this.setToken()
+    return updateItem({
+      token: this.token,
+      body: await zipApp(src),
+      id
+    })
+  }
+  
+  async publishItem(id, trustedTesters) {
+    await this.setToken()
+    return publishItem({
+      token: this.token,
+      target: trustedTesters ? 'trustedTesters' : 'default',
+      id,
+    })
+  }
+  
+  async removeItem(id) {
+    await this.setToken()
+    return updateItem({
+      token: this.token,
+      body: zipEmpty(manifestMap['remove']),
+      id
+    })
+  }
+  
+  async checkItem(id, projection) {
+    await this.setToken()
+    return checkItem({
+      token: this.token,
+      projection,
+      id
+    })
+  }
 }

@@ -1,220 +1,114 @@
 import assert from 'assert'
 import rewire from 'rewire'
 import sinon from 'sinon'
+import Zip from 'jszip'
 
-const m = rewire('../src')
+const {
+  CLIENT_ID: client_id,
+  CLIENT_SECRET: client_secret,
+  REFRESH_TOKEN: refresh_token,
+} = process.env
 
-describe(`without CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN`, () => {
-  const cause = undefined
-
-  it(`insertItem`, () => {
-    const insertItem = m.__get__(`insertItem`)
-    assert.throws(
-      () =>
-        insertItem({
-          src: '',
-          getTokenQuery: {
-            client_id: cause,
-            client_secret: 'client_secret',
-            refresh_token: 'refresh_token'
-          }
-        }),
-      /error: missing required process.env.CLIENT_ID/
+const stubMap = {
+  ['dtz']: () => {
+    const dtz = sinon.stub().returns(
+      new Zip()
     )
-  })
+    
+    return {
+      ['default']: dtz
+    }
+  },
+  ['got']: () => {
+    const got = sinon.stub().resolves({
+      body: {
+        uploadState: 'SUCCESS',
+        itemError: [
+          { error_detail: 'ERROR_DETAIL' }
+        ],
+        access_token: 'ACCESS_TOKEN'
+      }
+    })
+    
+    return {
+      ['default']: got
+    }
+  }
+}
 
-  it(`updateItem`, () => {
-    const updateItem = m.__get__(`updateItem`)
-    assert.throws(
-      () =>
-        updateItem({
-          src: '',
-          getTokenQuery: {
-            client_id: 'client_id',
-            client_secret: cause,
-            refresh_token: 'refresh_token'
-          }
-        }),
-      /error: missing required process.env.CLIENT_SECRET/
-    )
-  })
+const modules = rewire('../src')
+const Chenv = modules['default']
+const credentials = { client_id, client_secret, refresh_token }
 
-  it(`deleteItem`, () => {
-    const deleteItem = m.__get__(`deleteItem`)
-    assert.throws(
-      () =>
-        deleteItem({
-          src: '',
-          getTokenQuery: {
-            client_id: 'client_id',
-            client_secret: 'client_secret',
-            refresh_token: cause
-          }
-        }),
-      /error: missing required process.env.REFRESH_TOKEN/
-    )
-  })
+describe('', () => {
+  const src   = 'src'
+  const id    = 'id'
+  
+  it('insertItem(src)', test((chenv, stubs) =>
+    chenv.insertItem(src).then(() => {
+      assert.equal(stubs.dtz['default'].callCount, 1)
+      assert.equal(stubs.got['default'].callCount, 2)
+    })
+  ))
+  
+  it('updateItem(id, src)', test((chenv, stubs) =>
+    chenv.updateItem(id, src).then(() => {
+      assert.equal(stubs.dtz['default'].callCount, 1)
+      assert.equal(stubs.got['default'].callCount, 2)
+    })
+  ))
+  
+  it('publishItem(id)', test((chenv, stubs) =>
+    chenv.publishItem(id).then(() => {
+      assert.equal(stubs.dtz['default'].callCount, 0)
+      assert.equal(stubs.got['default'].callCount, 2)
+    })
+  ))
+  
+  it('removeItem(id)', test((chenv, stubs) =>
+    chenv.removeItem(id).then(() => {
+      assert.equal(stubs.dtz['default'].callCount, 0)
+      assert.equal(stubs.got['default'].callCount, 2)
+    })
+  ))
+  
+  it('checkItem(id)', test((chenv, stubs) =>
+    chenv.checkItem(id).then(() => {
+      assert.equal(stubs.dtz['default'].callCount, 0)
+      assert.equal(stubs.got['default'].callCount, 2)
+    })
+  ))
+  
+  function test(callback) {
+    const chenv = new Chenv(credentials)
+    const stubs = {
+      ['dtz']: stubMap['dtz'](),
+      ['got']: stubMap['got'](),
+    }
+    const locals = {
+      ['_dtz']: stubs['dtz'],
+      ['_got']: stubs['got'],
+    }
+    return () =>
+      modules.__with__(locals)(() => callback(chenv, stubs))
+  } 
 })
 
-describe(`invalid CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN`, () => {
-  const cause = {
-    client_id: 'invalid_client_id',
-    client_secret: 'invalid_client_secret',
-    refresh_token: 'invalid_refresh_token'
-  }
-
-  const expect = `Response code 401 (Unauthorized)`
-
-  it(`insertItem`, async () => {
-    const insertItem = m.__get__(`insertItem`)
-    try {
-      await insertItem({ src: 'string', getTokenQuery: cause })
-    } catch (err) {
-      assert.deepStrictEqual(err.message, expect)
-    }
+describe('throws', () => {
+  it('new Chenv()', () => {
+    assert.throws(() => new Chenv())
   })
-
-  it(`updateItem`, async () => {
-    const updateItem = m.__get__(`updateItem`)
-    try {
-      await updateItem({
-        src: 'string',
-        getTokenQuery: cause,
-        extension_id: 'string'
-      })
-    } catch (err) {
-      assert.deepStrictEqual(err.message, expect)
-    }
+  
+  it('headers(access_token)', () => {
+    const headers = modules.__get__('headers')
+    const access_token = false
+    assert.throws(() => headers(access_token))
   })
-
-  it(`deleteItem`, async () => {
-    const deleteItem = m.__get__(`deleteItem`)
-    try {
-      await deleteItem({ getTokenQuery: cause })
-    } catch (err) {
-      assert.deepStrictEqual(err.message, expect)
-    }
-  })
-})
-
-describe(`after getTokenQuery`, () => {
-  const { CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN } = process.env
-  const getTokenQuery = {
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    refresh_token: REFRESH_TOKEN
-  }
-
-  describe(`invalid`, () => {
-    it(`src === undefined via insertItem`, async () => {
-      const cause = undefined
-      const expect = 'error: missing required src'
-
-      const insertItem = m.__get__(`insertItem`)
-      try {
-        await insertItem({
-          getTokenQuery,
-          src: cause
-        })
-      } catch (err) {
-        assert.equal(err.message, expect)
-      }
-    })
-
-    it(`src === "./notExist" via updateItem`, async () => {
-      const cause = `./notExist`
-      const expect = 'ENOENT: no such file or directory, scandir'
-
-      const updateItem = m.__get__(`updateItem`)
-      try {
-        await updateItem({
-          getTokenQuery,
-          src: cause,
-          extension_id: 'string'
-        })
-      } catch (err) {
-        const result = err.message.slice(0, expect.length)
-        assert.equal(result, expect)
-      }
-    })
-
-    it(`!src.inclides(manifest.json) via insertItem`, async () => {
-      const cause = './test/withoutManifest'
-
-      //  const os = process.env.OS
-      //  const expect =
-      //     os && os.toLowerCase().includes(`windows`)
-      //        ? `Invalid package. Please make sure it is a valid zip file and the file manifest.json is at the root directory of the zip package.`
-      //        : `No manifest found in package. Please make sure to put manifest.json at the root directory of the zip package.`
-
-      const insertItem = m.__get__(`insertItem`)
-      try {
-        await insertItem({
-          getTokenQuery,
-          src: cause
-        })
-      } catch (err) {
-        assert.ok(err.message.includes(`Please make sure`))
-      }
-    })
-
-    it(`invalid extension_id via updateItem`, async () => {
-      const cause = `not_exist_extension_id`
-      const expect = `Application error (6): ${cause} not found`
-
-      const updateItem = m.__get__(`updateItem`)
-      try {
-        await updateItem({
-          getTokenQuery,
-          src: './test/withManifest',
-          extension_id: cause
-        })
-      } catch (err) {
-        assert.deepStrictEqual(err.message, expect)
-      }
-    })
-  })
-
-  describe(`valid`, () => {
-    it(`chenv update <source> -p`, async () => {
-      const cause = true
-      const updateItem = m.__get__(`updateItem`)
-
-      const spy_publish = sinon.spy()
-      const _got = {
-        update: () => {},
-        publish: spy_publish
-      }
-
-      await m.__with__({ _got })(() =>
-        updateItem({
-          getTokenQuery,
-          src: './test/withManifest',
-          extension_id: `not_exist_extension_id`,
-          publish: cause
-        })
-      )
-
-      assert.ok(spy_publish.calledOnce)
-    })
-
-    it(`chenv delete --id foo,bar,baa`, async () => {
-      const cause = ['foo', 'bar', 'baa']
-      const deleteItem = m.__get__(`deleteItem`)
-
-      const spy_update = sinon.spy()
-      const _got = {
-        getToken: () => {},
-        update: spy_update
-      }
-      await m.__with__({ _got })(() =>
-        deleteItem({
-          getTokenQuery,
-          deleteExtensions: cause
-        })
-      )
-
-      assert.deepStrictEqual(spy_update.callCount, cause.length)
-    })
+  
+  it('zipApp(src)', async () => {
+    const zipApp = modules.__get__('zipApp')
+    const src = false
+    try { await zipApp(src); assert.ok(false) }
+    catch (err) { assert.ok(err) }
   })
 })

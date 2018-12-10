@@ -9,8 +9,7 @@ cache:
   directories:
     - node_modules
 script:
-  - yarn type
-  - yarn test
+  - yarn test:ci
 after_success:
   - yarn coverage
 deploy:
