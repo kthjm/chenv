@@ -88,10 +88,10 @@ program
   return Promise.resolve().then(() =>
     !id
     ? chenv.insertItem(src)
-    : chenv.updateItem(id, src).then(() =>
+    : chenv.updateItem(id, src).then((res) =>
       publish   ? chenv.publishItem(id, false) :
       publishTt ? chenv.publishItem(id, true)  :
-      false
+      res
     )
   )
   .then(console.log)

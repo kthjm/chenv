@@ -93,12 +93,12 @@ program
           ? chenv.insertItem(src)
           : chenv
               .updateItem(id, src)
-              .then(() =>
+              .then(res =>
                 publish
                   ? chenv.publishItem(id, false)
                   : publishTt
                   ? chenv.publishItem(id, true)
-                  : false
+                  : res
               )
       )
       .then(console.log)
