@@ -75,7 +75,7 @@ program
             })
           )
           .then(refresh_token => {
-            console.log(`\nREFRESH_TOKEN=${refresh_token}\n`)
+            console.log(`\n> REFRESH_TOKEN=${refresh_token}\n`)
           })
           .catch(errorHandler)
   })
