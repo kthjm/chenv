@@ -48,7 +48,7 @@ export default [
     ],
     output: {
       format: 'cjs',
-      file: '.bin/chenv.js',
+      file: '.dist/chenv.js',
       banner: shebang
     },
     plugins: [

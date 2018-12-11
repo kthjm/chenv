@@ -1,11 +1,11 @@
 {
   "name": "chenv",
   "version": "1.0.0",
-  "description": "CLI to deploy chrome extension continuously by enviroment variables",
+  "description": "CLI for Chrome Web Store item",
   "repository": "https://github.com/kthjm/chenv",
   "author": "kthjm <toxictoxer@gmail.com>",
   "main": ".dist/index.js",
-  "bin": ".bin/chenv.js",
+  "bin": ".dist/chenv.js",
   "license": "MIT",
   "keywords": [
     "chrome",

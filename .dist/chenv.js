@@ -140,4 +140,8 @@ program
 
 program.on('--help', () => console.log(''))
 program.parse(process.argv)
-if (!program.args.length) program.help()
+
+if (!program.args.length) {
+  console.log(``)
+  program.help()
+}
