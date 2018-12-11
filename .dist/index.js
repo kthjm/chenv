@@ -11,11 +11,14 @@ var dtz = _interopDefault(require('dtz'))
 var Zip = _interopDefault(require('jszip'))
 
 //
+const toBody = ({ body }) =>
+  typeof body === 'object' ? body : JSON.parse(body)
 const throws = message => {
   throw new Error(message)
 }
 const asserts = (condition, message) => {
-  return !condition && throws(message)
+  if (!condition) throws(message)
+  return
 }
 const joinParams = params => {
   const entries = Object.entries(params)
@@ -28,23 +31,21 @@ const joinParams = params => {
     .map(([key, value]) => `${key}=${value}`)
   return entries.length ? '?' + entries.join('&') : ''
 }
-const toBody = ({ body }) =>
-  typeof body === 'object' ? body : JSON.parse(body)
 
 //
 const oauth2_uri = 'https://accounts.google.com/o/oauth2'
-const oauth2_auth_uri = `${oauth2_uri}/auth`
-const oauth2_token_uri = `${oauth2_uri}/token`
+const auth_uri = `${oauth2_uri}/auth`
+const token_uri = `${oauth2_uri}/token`
 const redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
 const authURL = client_id => {
   asserts(client_id, `[chenv] client_id is required`)
   return (
-    oauth2_auth_uri +
+    auth_uri +
     joinParams({
       client_id,
       redirect_uri,
       response_type: 'code',
-      scope: 'https://www.googleapis.com/auth/chromewebstore' // scope: 'https://www.googleapis.com/auth/chromewebstore.readonly',
+      scope: 'https://www.googleapis.com/auth/chromewebstore'
     })
   )
 }
@@ -52,7 +53,7 @@ const getRefreshToken = ({ client_id, client_secret, code } = {}) => {
   asserts(client_id, `[chenv] client_id is required`)
   asserts(client_secret, `[chenv] client_secret is required`)
   asserts(code, `[chenv] code is required`)
-  return got(oauth2_token_uri, {
+  return got(token_uri, {
     method: 'POST',
     json: true,
     body: {
@@ -70,7 +71,7 @@ const getAccessToken = ({ client_id, client_secret, refresh_token } = {}) => {
   asserts(client_id, `[chenv] client_id is required`)
   asserts(client_secret, `[chenv] client_secret is required`)
   asserts(refresh_token, `[chenv] refresh_token is required`)
-  return got(oauth2_token_uri, {
+  return got(token_uri, {
     method: 'POST',
     json: true,
     body: {
@@ -91,15 +92,15 @@ const insert_uri = `${base_uri}/upload/chromewebstore/v1.1/items`
 
 const update_uri = id => `${insert_uri}/${id}`
 
+const publish_uri = id => `${check_uri(id)}/publish`
+
 const check_uri = (id, projection) =>
   `${base_uri}/chromewebstore/v1.1/items/${id}${joinParams({
     projection
   })}`
 
-const publish_uri = id => `${check_uri(id)}/publish`
-
 const headers = access_token => {
-  asserts(access_token, `[chenv] access_token is ${access_token}`)
+  asserts(access_token, `[chenv] access_token is invalid`)
   return {
     'x-goog-api-version': '2',
     Authorization: `Bearer ${access_token}`
@@ -145,10 +146,12 @@ const checkItem = ({ token, id, projection } = {}) => {
 
 const requestHandler = res => {
   const body = toBody(res)
-  const { uploadState, itemError } = body
-  return !uploadState || uploadState === 'SUCCESS'
-    ? body
-    : throws(JSON.stringify(itemError || body))
+
+  if (body.uploadState !== 'SUCCESS') {
+    throws(JSON.stringify(body))
+  }
+
+  return body
 }
 
 //
@@ -182,7 +185,7 @@ class Chenv {
     asserts(client_id, `client_id is required`)
     asserts(client_secret, `client_secret is required`)
     asserts(refresh_token, `refresh_token is required`)
-    this.token = undefined
+    this.token = ''
     this.credentials = {
       client_id,
       client_secret,

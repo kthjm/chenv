@@ -1,17 +1,17 @@
 // @flow
-export * from './token'
-export * from './item'
+export * from './api.token'
+export * from './api.item'
 
 import dtz from 'dtz'
 import Zip from 'jszip'
 import { asserts } from './util'
-import { getAccessToken } from './token'
+import { getAccessToken } from './api.token'
 import {
   insertItem,
   updateItem,
   publishItem,
   checkItem,
-} from './item'
+} from './api.item'
 
 const manifestMap = {
   ['remove']: {
@@ -32,18 +32,26 @@ const zipApp = async (src) => {
   return zip.generateNodeStream()
 }
 
-const zipEmpty = (manifestJson): JSZip => {
+const zipEmpty = (manifestJson) => {
   const zip = new Zip()
   zip.file('manifest.json', JSON.stringify(manifestJson))
   return zip.generateNodeStream()
 }
 
 export default class Chenv {
+  token: string
+  
+  credentials: {
+    client_id: string,
+    client_secret: string,
+    refresh_token: string
+  }
+  
   constructor({ client_id, client_secret, refresh_token } = {}) {
     asserts(client_id, `client_id is required`)
     asserts(client_secret, `client_secret is required`)
     asserts(refresh_token, `refresh_token is required`)
-    this.token = undefined
+    this.token = ''
     this.credentials = { client_id, client_secret, refresh_token }
   }
   

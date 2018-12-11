@@ -1,14 +1,22 @@
 // @flow
 
+type Body = { [key]: any }
+
+export const toBody = ({ body }: { body: Body | string }): Body =>
+  typeof body === 'object'
+  ? body
+  : JSON.parse(body)
+
 export const throws = (message) => {
   throw new Error(message)
 }
 
-export const asserts = (condition, message) => {
-  return !condition && throws(message)
+export const asserts = (condition: any, message: string): void => {
+  if (!condition) throws(message)
+  return
 }
 
-export const joinParams = (params) => {
+export const joinParams = (params: { [key]: any }): string => {
   const entries =
   Object
   .entries(params)
@@ -25,8 +33,3 @@ export const joinParams = (params) => {
   ? '?' + entries.join('&')
   : ''
 }
-
-export const toBody = ({ body }) =>
-  typeof body === 'object'
-  ? body
-  : JSON.parse(body)

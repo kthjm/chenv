@@ -31,11 +31,12 @@
   "scripts": {
     "nod": "cross-env BABEL_ENV=just node -r @babel/register",
     "chenv": "yarn nod bin",
+    "pretype": "flow-typed install --ignoreDeps dev",
     "type": "flow",
     "test": "cross-env BABEL_ENV=test nyc mocha",
     "build": "cross-env BABEL_ENV=build rollup -c",
-    "test:ci": "run-s type test",
-    "build:ci": "run-s type test build",
+    "test:ci": "run-s pretype type test",
+    "build:ci": "run-s pretype type test build",
     "coverage": "nyc report --reporter=lcov && codecov"
   },
   "dependencies": {
@@ -55,7 +56,8 @@
     "babel-preset-power-assert": "^3.0.0",
     "codecov": "^3.1.0",
     "cross-env": "^5.2.0",
-    "flow-bin": "^0.87.0",
+    "flow-bin": "^0.88.0",
+    "flow-typed": "^2.5.1",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
     "nyc": "^13.1.0",

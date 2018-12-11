@@ -10,22 +10,36 @@ const insert_uri =
 const update_uri = (id) =>
 `${insert_uri}/${id}`
 
-const check_uri = (id, projection) =>
-`${base_uri}/chromewebstore/v1.1/items/${id}${joinParams({ projection })}`
-
 const publish_uri = (id) =>
 `${check_uri(id)}/publish`
 
+const check_uri = (id, projection) =>
+`${base_uri}/chromewebstore/v1.1/items/${id}${joinParams({ projection })}`
+
 const headers = (access_token) => {
-  asserts(access_token, `[chenv] access_token is ${access_token}`)
+  asserts(access_token, `[chenv] access_token is invalid`)
   return {
     'x-goog-api-version': '2',
     'Authorization': `Bearer ${access_token}`
   }
 }
 
-export const insertItem = ({ token, body } = {}) => {
+export type ItemResource = {
+  kind: string,
+  id: string,
+  publicKey: string,
+  uploadState: string,
+  itemError: { error_detail: string }[]
+}
+
+export const insertItem = (
+  { token, body }: {
+    token: string,
+    body: Readable
+  } = {}
+): ItemResource => {
   asserts(body, `[chenv] body is ${body}`)
+  
   return got(insert_uri, {
     method: 'POST',
     headers: headers(token),
@@ -34,9 +48,16 @@ export const insertItem = ({ token, body } = {}) => {
   .then(requestHandler)
 }
 
-export const updateItem = ({ token, id, body } = {}) => {
+export const updateItem = (
+  { token, id, body }: {
+    token: string,
+    id: string,
+    body: Readable
+  } = {}
+): ItemResource => {
   asserts(id, `[chenv] id is ${id}`)
   asserts(body, `[chenv] body is ${body}`)
+  
   return got(update_uri(id), {
     method: 'PUT',
     headers: headers(token),
@@ -45,9 +66,16 @@ export const updateItem = ({ token, id, body } = {}) => {
   .then(requestHandler)
 }
 
-export const publishItem = ({ token, id, target } = {}) => {
+export const publishItem = (
+  { token, id, target }: {
+    token: string,
+    id: string,
+    target: string
+  } = {}
+): ItemResource => {
   asserts(id, `[chenv] id is ${id}`)
   asserts(target, `[chenv] target is ${target}`)
+  
   return got(publish_uri(id), {
     method: 'POST',
     headers: headers(token),
@@ -57,8 +85,15 @@ export const publishItem = ({ token, id, target } = {}) => {
   .then(requestHandler)
 }
 
-export const checkItem = ({ token, id, projection } = {}) => {
+export const checkItem = (
+  { token, id, projection }: {
+    token: string,
+    id: string,
+    projection?: string
+  } = {}
+): ItemResource => {
   asserts(id, `[chenv] id is ${id}`)
+  
   return got(check_uri(id, projection), {
     method: 'GET',
     headers: headers(token)
@@ -66,10 +101,12 @@ export const checkItem = ({ token, id, projection } = {}) => {
   .then(requestHandler)
 }
 
-const requestHandler = (res) => {
+const requestHandler = (res: { body: ItemResource }): ItemResource => {
   const body = toBody(res)
-  const { uploadState, itemError } = body
-  return (!uploadState || uploadState === 'SUCCESS')
-  ? body
-  : throws(JSON.stringify(itemError || body))
+  
+  if (body.uploadState !== 'SUCCESS') {
+    throws(JSON.stringify(body))
+  }
+  
+  return body
 }

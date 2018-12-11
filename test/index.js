@@ -11,13 +11,11 @@ const {
 
 const stubMap = {
   ['dtz']: () => {
-    const dtz = sinon.stub().returns(
+    const dtz = sinon.stub().resolves(
       new Zip()
     )
     
-    return {
-      ['default']: dtz
-    }
+    return dtz
   },
   ['got']: () => {
     const got = sinon.stub().resolves({
@@ -26,13 +24,12 @@ const stubMap = {
         itemError: [
           { error_detail: 'ERROR_DETAIL' }
         ],
-        access_token: 'ACCESS_TOKEN'
+        access_token: 'ACCESS_TOKEN',
+        refresh_token: 'REFRESH_TOKEN',
       }
     })
     
-    return {
-      ['default']: got
-    }
+    return got
   }
 }
 
@@ -40,55 +37,65 @@ const modules = rewire('../src')
 const Chenv = modules['default']
 const credentials = { client_id, client_secret, refresh_token }
 
-describe('', () => {
-  const src   = 'src'
-  const id    = 'id'
+describe('chenv[method]()', () => {
+  const src = 'src'
+  const id  = 'id'
   
   it('insertItem(src)', test((chenv, stubs) =>
     chenv.insertItem(src).then(() => {
-      assert.equal(stubs.dtz['default'].callCount, 1)
-      assert.equal(stubs.got['default'].callCount, 2)
+      assert.equal(stubs.dtz.callCount, 1)
+      assert.equal(stubs.got.callCount, 2)
     })
   ))
   
   it('updateItem(id, src)', test((chenv, stubs) =>
     chenv.updateItem(id, src).then(() => {
-      assert.equal(stubs.dtz['default'].callCount, 1)
-      assert.equal(stubs.got['default'].callCount, 2)
+      assert.equal(stubs.dtz.callCount, 1)
+      assert.equal(stubs.got.callCount, 2)
     })
   ))
   
   it('publishItem(id)', test((chenv, stubs) =>
     chenv.publishItem(id).then(() => {
-      assert.equal(stubs.dtz['default'].callCount, 0)
-      assert.equal(stubs.got['default'].callCount, 2)
+      assert.equal(stubs.dtz.callCount, 0)
+      assert.equal(stubs.got.callCount, 2)
     })
   ))
   
   it('removeItem(id)', test((chenv, stubs) =>
     chenv.removeItem(id).then(() => {
-      assert.equal(stubs.dtz['default'].callCount, 0)
-      assert.equal(stubs.got['default'].callCount, 2)
+      assert.equal(stubs.dtz.callCount, 0)
+      assert.equal(stubs.got.callCount, 2)
     })
   ))
   
   it('checkItem(id)', test((chenv, stubs) =>
     chenv.checkItem(id).then(() => {
-      assert.equal(stubs.dtz['default'].callCount, 0)
-      assert.equal(stubs.got['default'].callCount, 2)
+      assert.equal(stubs.dtz.callCount, 0)
+      assert.equal(stubs.got.callCount, 2)
     })
   ))
   
   function test(callback) {
     const chenv = new Chenv(credentials)
+    
     const stubs = {
       ['dtz']: stubMap['dtz'](),
       ['got']: stubMap['got'](),
     }
+    
+    const apiToken = rewire('../src/api.token')
+    const apiItem = rewire('../src/api.item')
+    const _got = { default: stubs['got'] }
+    apiToken.__set__({ _got })
+    apiItem.__set__({ _got })
+    
     const locals = {
-      ['_dtz']: stubs['dtz'],
-      ['_got']: stubs['got'],
+      ['_dtz']: { default: stubs['dtz'] },
+      ['_api']: apiToken,
+      ['_api2']: apiItem,
     }
+    
     return () =>
       modules.__with__(locals)(() => callback(chenv, stubs))
   } 
@@ -97,12 +104,6 @@ describe('', () => {
 describe('throws', () => {
   it('new Chenv()', () => {
     assert.throws(() => new Chenv())
-  })
-  
-  it('headers(access_token)', () => {
-    const headers = modules.__get__('headers')
-    const access_token = false
-    assert.throws(() => headers(access_token))
   })
   
   it('zipApp(src)', async () => {
