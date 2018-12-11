@@ -1,5 +1,6 @@
 .nyc_output/
 flow-typed/
+coverage/
 bin/
 src/
 test/
