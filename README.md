@@ -5,12 +5,13 @@
 [![Build Status](https://img.shields.io/travis/kthjm/chenv.svg?style=flat-square)](https://travis-ci.org/kthjm/chenv)
 [![Coverage Status](https://img.shields.io/codecov/c/github/kthjm/chenv.svg?style=flat-square)](https://codecov.io/github/kthjm/chenv)
 
-![](https://i1.wp.com/www.memories-of-movie.com/wp-content/uploads/2015/07/suiken02-1.jpg)
+[![](https://i.gyazo.com/39ffa21462c1212d0e53077b6b4a51b7.jpg)](https://www.google.com/search?q=jackie+chan+drunken+master+2&tbm=isch)
 
 cli tool to manage Chrome Web Store item.
 
-- Using `.env` as config file
-- No need zip
+#### Why?
+- no need zip
+- using `.env` as config file
 
 ## Setup
 
@@ -19,10 +20,10 @@ cli tool to manage Chrome Web Store item.
 CLIENT_ID=XXXXXXXXXX
 CLIENT_SECRET=XXXXXXXXXX
 ```
-#### 2. install and `init`
+#### 2. install and `auth`
 ```shell
 yarn add -D chenv
-yarn chenv init
+yarn chenv auth
 ...
 > REFRESH_TOKEN=XXXXXXXXXX
 ```
@@ -43,7 +44,7 @@ Options:
   -h, --help                   output usage information
 
 Commands:
-  init [options]               get REFRESH_TOKEN easily
+  auth [options]               get REFRESH_TOKEN easily
   upload [options] <src> [id]  upload item (!id ? insert : update)
   remove [options] <id>        not remove but update item as "removed-like"
 ```
