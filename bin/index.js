@@ -66,22 +66,22 @@ program
 .action(({ app, envFile }) =>
   Promise.resolve().then(async () => {
     const { client_id, client_secret } = loadCredentials(envFile)
-  
+
     if (!client_id || !client_secret) {
       return console.log('\n > Please set CLIENT_ID and CLIENT_SECRET\n')
     }
-    
+
     const auth_uri = authURL(client_id)
-    const msg = 'Tell me code by authorize:'
-    
-    const message = await opn(auth_uri, {
-      wait: true,
-      app: app ? app.split(',') : undefined
+
+    // no wait
+    opn(auth_uri, { wait: false, app: app ? app.split(',') : undefined })
+
+    const { code } = await enquirer.prompt({
+      name: 'code',
+      type: 'input',
+      message: 'Tell me code by authorize:' + '\n' + auth_uri + '\n'
     })
-    .then(() => msg)
-    .catch(() => msg + '\n' + auth_uri + '\n')
-    
-    const { code } = await enquirer.prompt({ name: 'code', type: 'input', message })
+
     const refresh_token = await getRefreshToken({ client_id, client_secret, code })
     return console.log(`\n > REFRESH_TOKEN=${refresh_token}\n`)
   })
