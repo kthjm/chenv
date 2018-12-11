@@ -10,10 +10,10 @@ script:
 after_success:
 - yarn coverage
 before_deploy:
-- rm .gitignore
 - yarn build
 deploy:
   provider: npm
+  skip_cleanup: true
   email: toxictoxer@gmail.com
   api_key:
     secure: S9N/Bx48Zr6EIqZrsPI8ev0aZDYHuU2j54gFLsXmj7eRP9iV4bhKfo69QgkTa8GF8QBwv0iEZK9GGytSQpKPNDDhc4vqKPbf1InUsi/RPzr6ArsJOf+0hATUS8ZUNrphVtLPRP6WT+fhUoONMRCT/zH6fAX/K+fQm1mKJZ86tSiEjnkXoXaSUYy0P7ErzJU/Dd3Y55Q3K3BV1eiyF3BKAC86Y2MILdIjMiXOopq46nJzH3kB77BXUuDDpVvsYLL4s7A48at4VD9E3fy06fFF+VGXTPClZ+9Jx6hsX8syCJZIxgRCb8d/UpWHvZNe2zdmpJYfn7S0ueJoRykGgY9f7QjOKkvyWp2W65+AEmeix8zrVLzQClAvV7EC40Wt34MnYbSD2rYkjketOL/JYY0EmYMSQJgDOOwRE3UCLh18dBhFU3Vo2SDKUjF9iRzybEF6IpxqwBMmLelWQ0yCyTLeKoqcbwlmvZLLu3dV46CILxlScRKjgxIrKFRdLQpuSibUldjB+RB9A+V12lnQIEQMI+BgBlobdElI9Q2Ht84bsgKVQT7M7lYt7knNYorsD4zqCZOWACAJvm3WH8LYJpq949u8op2Vez2FK9fGXH7oKR1uFS3G3Yg4Lkt2df0/hSTzcr/kTKF67nFMy24U41sRwTGJk/IqIvKt1NYMMW2I8kk=
