@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/kthjm/chenv.svg?style=flat-square)](https://travis-ci.org/kthjm/chenv)
 [![Coverage Status](https://img.shields.io/codecov/c/github/kthjm/chenv.svg?style=flat-square)](https://codecov.io/github/kthjm/chenv)
 
-![](https://i1.wp.com/www.memories-of-movie.com/wp-content/uploads/2015/07/suiken02-1.jpg)
+[![](https://i.gyazo.com/39ffa21462c1212d0e53077b6b4a51b7.jpg)](https://www.google.com/search?q=jackie+chan+drunken+master+2&tbm=isch)
 
 cli tool to manage Chrome Web Store item.
 
