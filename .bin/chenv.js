@@ -9,30 +9,31 @@ var program = _interopDefault(require('commander'))
 var enquirer = _interopDefault(require('enquirer'))
 var dotenv = _interopDefault(require('dotenv'))
 var path = require('path')
-var Chenv = require('..')
-var Chenv__default = _interopDefault(Chenv)
+var __ = require('..')
 var packageJson = _interopDefault(require('../package.json'))
 
 const optionMap = {
-  ['envFile']: [
+  envFile: [
     '-e, --env-file <file>',
-    'dotenv filepath storing environment variables'
+    'dotenv filepath storing environment variables [default = ".env"]'
   ],
-  ['publish']: ['-p, --publish', `publish item directly after update`],
-  ['publishTt']: [
+  publish: [
+    '-p, --publish',
+    `(ignored when !id) publish item directly after update`
+  ],
+  publishTt: [
     '-t, --publish-tt',
-    `publish item directly after update to only "trustedTesters"`
+    `(ignored when !id) publish item directly after update to only "trustedTesters"`
   ],
-  ['projectionDraft']: ['-d, --projection-draft', ``],
-  ['projectionPublished']: ['-p, --projection-published', ``]
+  draft: ['-d, --draft', `projection=DRAFT`],
+  published: ['-p, --published', `projection=PUBLISHED`]
 }
 
 const loadCredentials = envFile => {
   const { error } = dotenv.config({
-    path:
-      typeof envFile === 'string' ? envFile : path.join(process.cwd(), '.env')
+    path: !envFile ? path.join(process.cwd(), '.env') : envFile
   })
-  if (error) console.warn(error)
+  if (error) console.warn(error.message)
   const {
     CLIENT_ID: client_id,
     CLIENT_SECRET: client_secret,
@@ -53,39 +54,39 @@ const errorHandler = err => {
 program.version(packageJson.version)
 program
   .command(`init`)
-  .description('')
+  .description('get REFRESH_TOKEN easily')
   .option(...optionMap['envFile'])
   .action(({ envFile }) => {
     const { client_id, client_secret } = loadCredentials(envFile)
-    return enquirer
-      .prompt({
-        name: 'code',
-        type: 'input',
-        message:
-          'Tell me code by authorize:' + '\n' + Chenv.authURL(client_id) + '\n'
-      })
-      .then(({ code }) =>
-        Chenv.getRefreshToken({
-          client_id,
-          client_secret,
-          code
-        })
-      )
-      .then(refresh_token => {
-        console.log('')
-        console.log(`REFRESH_TOKEN=${refresh_token}`)
-        console.log('')
-      })
-      .catch(errorHandler)
+    return !client_id || !client_secret
+      ? console.log('\nPlease set CLIENT_ID and CLIENT_SECRET at first\n')
+      : enquirer
+          .prompt({
+            name: 'code',
+            type: 'input',
+            message:
+              'Tell me code by authorize:' + '\n' + __.authURL(client_id) + '\n'
+          })
+          .then(({ code }) =>
+            __.getRefreshToken({
+              client_id,
+              client_secret,
+              code
+            })
+          )
+          .then(refresh_token => {
+            console.log(`\nREFRESH_TOKEN=${refresh_token}\n`)
+          })
+          .catch(errorHandler)
   })
 program
   .command(`upload <src> [id]`)
-  .description('')
-  .option(...optionMap['envFile'])
+  .description('upload item (!id ? insert : update)')
   .option(...optionMap['publish'])
   .option(...optionMap['publishTt'])
+  .option(...optionMap['envFile'])
   .action((src, id, { envFile, publish, publishTt }) => {
-    const chenv = new Chenv__default(loadCredentials(envFile))
+    const chenv = new __.Chenv(loadCredentials(envFile))
     return Promise.resolve()
       .then(() =>
         !id
@@ -100,59 +101,43 @@ program
                   : false
               )
       )
-      .catch(errorHandler)
-  })
-program
-  .command(`check <id>`)
-  .description('check item')
-  .option(...optionMap['envFile'])
-  .option(...optionMap['projectionDraft'])
-  .option(...optionMap['projectionPublished'])
-  .action((id, { envFile, projectionDraft, projectionPublished }) => {
-    const chenv = new Chenv__default(loadCredentials(envFile))
-    return chenv
-      .checkItem(
-        id,
-        projectionDraft ? 'DRAFT' : projectionPublished ? 'PUBLISHED' : ''
-      )
       .then(console.log)
       .catch(errorHandler)
   })
 program
   .command(`remove <id>`)
-  .description('update item as "removed-like"')
+  .description('not remove but update item as "removed-like"')
   .option(...optionMap['envFile'])
   .action((id, { envFile }) => {
-    const chenv = new Chenv__default(loadCredentials(envFile))
-    return chenv.removeItem(id).catch(errorHandler)
+    const chenv = new __.Chenv(loadCredentials(envFile))
+    return chenv
+      .removeItem(id)
+      .then(console.log)
+      .catch(errorHandler)
   })
 /*
-program.on('--help', function() {
-  console.log('')
-  console.log('  Examples:')
-  console.log('')
-  console.log('    $ chenv upload ./app -p')
-  console.log(``)
-  console.log(
-    `      => process.env.EXTENSION_ID ? update(./app).then(publish) : insert(./app)`
-  )
-  console.log(``)
-  console.log('    $ chenv delete id1,id2 -e .env')
-  console.log('')
-  console.log(`      => update [id1,id2] as "deleted style"(not deleted)`)
-  console.log('')
+
+program
+.command(`check <id>`)
+.description('check item information')
+.option(...optionMap['draft'])
+.option(...optionMap['published'])
+.option(...optionMap['envFile'])
+.action((id, { envFile, draft, published }) => {
+  const chenv = new Chenv(loadCredentials(envFile))
+
+  const projection =
+  draft     ? 'DRAFT'     :
+  published ? 'PUBLISHED' :
+  ''
+
+  return chenv.checkItem(id, projection)
+  .then(console.log)
+  .catch(errorHandler)
 })
+
 */
 
+program.on('--help', () => console.log(''))
 program.parse(process.argv)
-if (!program.args.length) program.help() // function errorHandler(err) {
-//   if (typeof spinner === 'object' && spinner.text) {
-//     spinner.fail()
-//   }
-//   console.error(
-//     cyan(`
-// ${err.message}
-//   `)
-//   )
-//   process.exit(1)
-// }
+if (!program.args.length) program.help()

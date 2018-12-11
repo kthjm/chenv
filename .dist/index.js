@@ -28,7 +28,10 @@ const joinParams = params => {
         typeof value === 'boolean' ||
         typeof value === 'number'
     )
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => {
+      const str = value
+      return `${key}=${str}`
+    })
   return entries.length ? '?' + entries.join('&') : ''
 }
 
@@ -108,7 +111,7 @@ const headers = access_token => {
 }
 
 const insertItem = ({ token, body } = {}) => {
-  asserts(body, `[chenv] body is ${body}`)
+  asserts(body, `[chenv] body is required`)
   return got(insert_uri, {
     method: 'POST',
     headers: headers(token),
@@ -117,7 +120,7 @@ const insertItem = ({ token, body } = {}) => {
 }
 const updateItem = ({ token, id, body } = {}) => {
   asserts(id, `[chenv] id is ${id}`)
-  asserts(body, `[chenv] body is ${body}`)
+  asserts(body, `[chenv] body is required`)
   return got(update_uri(id), {
     method: 'PUT',
     headers: headers(token),
@@ -233,8 +236,9 @@ class Chenv {
       id
     })
   }
-
-  async checkItem(id, projection) {
+  /*
+  ref: https://developer.chrome.com/webstore/webstore_api/items/get
+  async checkItem(id: string, projection: string): Promise<ItemResource> {
     await this.setToken()
     return checkItem({
       token: this.token,
@@ -242,6 +246,7 @@ class Chenv {
       id
     })
   }
+  */
 }
 
 exports.default = Chenv
@@ -252,3 +257,4 @@ exports.insertItem = insertItem
 exports.updateItem = updateItem
 exports.publishItem = publishItem
 exports.checkItem = checkItem
+exports.Chenv = Chenv
