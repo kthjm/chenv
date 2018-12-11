@@ -10,7 +10,7 @@
 CLI tool to manage Chrome Web Store item.
 
 - Using `.env` as config file
-- No need zip file
+- No need zip
 
 ## Setup
 
