@@ -47,6 +47,7 @@ Commands:
   upload [options] <src> [id]  upload item (!id ? insert : update)
   remove [options] <id>        not remove but update item as "removed-like"
 ```
+**⛔️ WARN**: No way to remove item from dashboard, Don't forget to set `id` when update item by `upload`. Or new item that has same name will be created.
 
 ## Ref
 - [Using the Chrome Web Store Publish API](https://developer.chrome.com/webstore/using_webstore_api)
