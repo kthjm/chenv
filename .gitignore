@@ -1,3 +1,6 @@
+.dist/
+flow-typed/
+
 # Logs
 logs
 *.log

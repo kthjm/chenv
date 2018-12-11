@@ -1,20 +1,21 @@
 language: node_js
 node_js:
 - '8'
-# sude: required
-# services:
-#   - docker
 cache:
   yarn: true
   directories:
-    - node_modules
+  - node_modules
+script:
+- yarn test:ci
 after_success:
-  - yarn coverage
+- yarn coverage
+before_deploy:
+- yarn build
 deploy:
   provider: npm
   email: toxictoxer@gmail.com
   api_key:
-    secure: Lan2ilNan4sfREBl2BzjtdxIJQXgJ309sczWckVr72Pnzb0pAHovaVnmEehLgGDr5nau0E3kTCQ3XArGdOwmHwm8o6NwFTxkMSZVU58rcnYLOY+PodtcjXCko8kOqS5lNHLE0WilQ3htdvLXo1mvEeP+GcoOX/N4Od/px3ST7e11j8XtrF3Sb01w6MUu6umKQo/To4Hf6eEUDrazFGdr+8f4hRZlrdIRBFzw5OkZzq0Yvv+V5K2ngpwnvWBAiYMw84WQc95df4SPIp2tcxlACW0nIwfPckjQoQLnGuP8FstmGJFB7o/VUJwIhD8kSyp2X2ZCKk8ybdWufweEr8XKfxcRsVAitNXnYquRJsK670veEhYVqtdGH9dFlKnbt3hW4Prw3Dt0omJD4SeOCjVbu9YOM5I+9Serk2on4EIPD5dig85czYltShOmh62sClma+YK3E5NQDfSJuOYzc4KjkRrnwtjsUU9GuroJy0XTJZEDNBBDtoIP84NhHyNuYInL77vDgBrKvFEXnYekmoO2NW4zI+qp0ekllIk5pt4idvgj9t8B7bM/zb/pVVkWrjr9YmO96Xid71c+xezpBcoa96b149yaWdxkv88tOujoIIDohfG4K8O4i+j+/T/dh/R4OJUPK5W/Ga1WYprOgt2csQLY3iqtVDYnJDcG/yskp+A=
+    secure: S9N/Bx48Zr6EIqZrsPI8ev0aZDYHuU2j54gFLsXmj7eRP9iV4bhKfo69QgkTa8GF8QBwv0iEZK9GGytSQpKPNDDhc4vqKPbf1InUsi/RPzr6ArsJOf+0hATUS8ZUNrphVtLPRP6WT+fhUoONMRCT/zH6fAX/K+fQm1mKJZ86tSiEjnkXoXaSUYy0P7ErzJU/Dd3Y55Q3K3BV1eiyF3BKAC86Y2MILdIjMiXOopq46nJzH3kB77BXUuDDpVvsYLL4s7A48at4VD9E3fy06fFF+VGXTPClZ+9Jx6hsX8syCJZIxgRCb8d/UpWHvZNe2zdmpJYfn7S0ueJoRykGgY9f7QjOKkvyWp2W65+AEmeix8zrVLzQClAvV7EC40Wt34MnYbSD2rYkjketOL/JYY0EmYMSQJgDOOwRE3UCLh18dBhFU3Vo2SDKUjF9iRzybEF6IpxqwBMmLelWQ0yCyTLeKoqcbwlmvZLLu3dV46CILxlScRKjgxIrKFRdLQpuSibUldjB+RB9A+V12lnQIEQMI+BgBlobdElI9Q2Ht84bsgKVQT7M7lYt7knNYorsD4zqCZOWACAJvm3WH8LYJpq949u8op2Vez2FK9fGXH7oKR1uFS3G3Yg4Lkt2df0/hSTzcr/kTKF67nFMy24U41sRwTGJk/IqIvKt1NYMMW2I8kk=
   on:
     tags: true
     repo: kthjm/chenv
