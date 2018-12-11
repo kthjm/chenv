@@ -30,7 +30,9 @@ const optionMap = {
 
 const loadCredentials = (envFile) => {
   const { error } = dotenv.config({
-    path: !envFile ? join(process.cwd(), '.env') : envFile
+    path: (envFile && typeof envFile === 'string')
+    ? envFile
+    : join(process.cwd(), '.env')
   })
 
   if (error) console.warn(error.message)
@@ -70,9 +72,9 @@ program
   .then(({ code }) =>
     getRefreshToken({ client_id, client_secret, code })
   )
-  .then((refresh_token) => {
-    console.log(`\n> REFRESH_TOKEN=${refresh_token}\n`)
-  })
+  .then((refresh_token) =>
+    console.log(`\n > REFRESH_TOKEN=${refresh_token}\n`)
+  )
   .catch(errorHandler)
 })
 
@@ -134,10 +136,7 @@ program
 */
 
 program.on('--help', () => console.log(''))
-
 program.parse(process.argv)
-
 if (!program.args.length) {
-  console.log(``)
   program.help()
 }

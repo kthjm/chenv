@@ -7,7 +7,7 @@
 
 ![](https://i1.wp.com/www.memories-of-movie.com/wp-content/uploads/2015/07/suiken02-1.jpg)
 
-CLI tool to manage Chrome Web Store item.
+cli tool to manage Chrome Web Store item.
 
 - Using `.env` as config file
 - No need zip

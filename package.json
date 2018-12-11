@@ -1,7 +1,7 @@
 {
   "name": "chenv",
   "version": "1.0.4",
-  "description": "CLI for Chrome Web Store item",
+  "description": "cli to manage Chrome Web Store item",
   "repository": "https://github.com/kthjm/chenv",
   "author": "kthjm <toxictoxer@gmail.com>",
   "main": ".dist/index.js",
@@ -11,6 +11,7 @@
     "chrome",
     "extension",
     "cli",
+    "cws",
     "webstore",
     "publish",
     "deploy",
