@@ -35,9 +35,8 @@
     "posttyped": "flow-typed create-stub dtz",
     "type": "flow",
     "test": "cross-env BABEL_ENV=test nyc mocha",
-    "build": "cross-env BABEL_ENV=build rollup -c",
     "test:ci": "run-s typed type test",
-    "build:ci": "run-s typed type test build",
+    "build": "cross-env BABEL_ENV=build rollup -c",
     "coverage": "nyc report --reporter=lcov && codecov"
   },
   "dependencies": {
