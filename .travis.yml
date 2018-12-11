@@ -10,6 +10,7 @@ script:
 after_success:
 - yarn coverage
 before_deploy:
+- rm .gitignore
 - yarn build
 deploy:
   provider: npm

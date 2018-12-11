@@ -1,5 +1,6 @@
 .nyc_output/
 flow-typed/
+bin/
 src/
 test/
 .flowconfig
