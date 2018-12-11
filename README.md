@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/kthjm/chenv.svg?style=flat-square)](https://travis-ci.org/kthjm/chenv)
 [![Coverage Status](https://img.shields.io/codecov/c/github/kthjm/chenv.svg?style=flat-square)](https://codecov.io/github/kthjm/chenv)
 
-![](https://nysanda.files.wordpress.com/2014/11/shaolinwoodenmen_hongkonglegends_movie_29.png)
+![](https://i1.wp.com/www.memories-of-movie.com/wp-content/uploads/2015/07/suiken02-1.jpg)
 
 CLI tool to manage Chrome Web Store item.
 
