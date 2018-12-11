@@ -1,6 +1,7 @@
 import program from 'commander'
 import enquirer from 'enquirer'
 import dotenv from 'dotenv'
+import opn from 'opn'
 import { join } from 'path'
 import { Chenv, authURL, getRefreshToken } from '..'
 import packageJson from '../package.json'
@@ -9,6 +10,10 @@ const optionMap = {
   envFile: [
     '-e, --env-file <file>',
     'dotenv filepath storing environment variables [default = ".env"]'
+  ],
+  app: [
+    '-a, --app <name..>',
+    'specify the app to open the url (sindresorhus/opn)'
   ],
   publish: [
     '-p, --publish',
@@ -54,29 +59,34 @@ const errorHandler = (err) => {
 program.version(packageJson.version)
 
 program
-.command(`init`)
+.command(`auth`)
 .description('get REFRESH_TOKEN easily')
+.option(...optionMap['app'])
 .option(...optionMap['envFile'])
-.action(({ envFile }) => {
-  const { client_id, client_secret } = loadCredentials(envFile)
-
-  return (!client_id || !client_secret)
-  ?
-  console.log('\nPlease set CLIENT_ID and CLIENT_SECRET at first\n')
-  :
-  enquirer.prompt({
-    name: 'code',
-    type: 'input',
-    message: 'Tell me code by authorize:' + '\n' + authURL(client_id) + '\n'
+.action(({ app, envFile }) =>
+  Promise.resolve().then(async () => {
+    const { client_id, client_secret } = loadCredentials(envFile)
+  
+    if (!client_id || !client_secret) {
+      return console.log('\n > Please set CLIENT_ID and CLIENT_SECRET\n')
+    }
+    
+    const auth_uri = authURL(client_id)
+    const msg = 'Tell me code by authorize:'
+    
+    const message = await opn(auth_uri, {
+      wait: true,
+      app: app ? app.split(',') : undefined
+    })
+    .then(() => msg)
+    .catch(() => msg + '\n' + auth_uri + '\n')
+    
+    const { code } = await enquirer.prompt({ name: 'code', type: 'input', message })
+    const refresh_token = await getRefreshToken({ client_id, client_secret, code })
+    return console.log(`\n > REFRESH_TOKEN=${refresh_token}\n`)
   })
-  .then(({ code }) =>
-    getRefreshToken({ client_id, client_secret, code })
-  )
-  .then((refresh_token) =>
-    console.log(`\n > REFRESH_TOKEN=${refresh_token}\n`)
-  )
   .catch(errorHandler)
-})
+)
 
 program
 .command(`upload <src> [id]`)

@@ -9,8 +9,9 @@
 
 cli tool to manage Chrome Web Store item.
 
-- Using `.env` as config file
-- No need zip
+#### Why?
+- no need zip
+- using `.env` as config file
 
 ## Setup
 
@@ -19,10 +20,10 @@ cli tool to manage Chrome Web Store item.
 CLIENT_ID=XXXXXXXXXX
 CLIENT_SECRET=XXXXXXXXXX
 ```
-#### 2. install and `init`
+#### 2. install and `auth`
 ```shell
 yarn add -D chenv
-yarn chenv init
+yarn chenv auth
 ...
 > REFRESH_TOKEN=XXXXXXXXXX
 ```
@@ -43,7 +44,7 @@ Options:
   -h, --help                   output usage information
 
 Commands:
-  init [options]               get REFRESH_TOKEN easily
+  auth [options]               get REFRESH_TOKEN easily
   upload [options] <src> [id]  upload item (!id ? insert : update)
   remove [options] <id>        not remove but update item as "removed-like"
 ```
