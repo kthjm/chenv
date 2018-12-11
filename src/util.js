@@ -1,13 +1,13 @@
 // @flow
 
-type Body = { [key]: any }
+type AnyObject = { [key: string]: any }
 
-export const toBody = ({ body }: { body: Body | string }): Body =>
+export const toBody = ({ body }: { body: AnyObject | string }): AnyObject =>
   typeof body === 'object'
   ? body
   : JSON.parse(body)
 
-export const throws = (message) => {
+export const throws = (message: string): void => {
   throw new Error(message)
 }
 
@@ -16,7 +16,7 @@ export const asserts = (condition: any, message: string): void => {
   return
 }
 
-export const joinParams = (params: { [key]: any }): string => {
+export const joinParams = (params: AnyObject): string => {
   const entries =
   Object
   .entries(params)
@@ -25,10 +25,11 @@ export const joinParams = (params: { [key]: any }): string => {
     || typeof value === 'boolean'
     || typeof value === 'number'
   )
-  .map(([ key, value ]) =>
-    `${key}=${value}`
-  )
-  
+  .map(([ key, value ]) => {
+    const str: any = value;(str: string)
+    return `${key}=${str}`
+  })
+
   return entries.length
   ? '?' + entries.join('&')
   : ''

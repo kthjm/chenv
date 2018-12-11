@@ -17,13 +17,11 @@ export const authURL = (client_id: string): string => {
   })
 }
 
-export const getRefreshToken = (
-  { client_id, client_secret, code }: {
-    client_id: string,
-    client_secret: string,
-    code: string
-  } = {}
-): string => {
+export const getRefreshToken = ({ client_id, client_secret, code }: {
+  client_id: string,
+  client_secret: string,
+  code: string
+} = {}): Promise<string> => {
   asserts(client_id, `[chenv] client_id is required`)
   asserts(client_secret, `[chenv] client_secret is required`)
   asserts(code, `[chenv] code is required`)
@@ -42,13 +40,11 @@ export const getRefreshToken = (
   .then(({ refresh_token }) => refresh_token)
 }
 
-export const getAccessToken = (
-  { client_id, client_secret, refresh_token }: {
-    client_id: string,
-    client_secret: string,
-    refresh_token: string
-  } = {}
-): string => {
+export const getAccessToken = ({ client_id, client_secret, refresh_token }: {
+  client_id: string,
+  client_secret: string,
+  refresh_token: string
+} = {}): Promise<string> => {
   asserts(client_id, `[chenv] client_id is required`)
   asserts(client_secret, `[chenv] client_secret is required`)
   asserts(refresh_token, `[chenv] refresh_token is required`)

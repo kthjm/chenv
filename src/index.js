@@ -11,6 +11,7 @@ import {
   updateItem,
   publishItem,
   checkItem,
+  type ItemResource,
 } from './api.item'
 
 const manifestMap = {
@@ -38,38 +39,39 @@ const zipEmpty = (manifestJson) => {
   return zip.generateNodeStream()
 }
 
+type Credentials = {
+  client_id: string,
+  client_secret: string,
+  refresh_token: string
+}
+
 export default class Chenv {
   token: string
-  
-  credentials: {
-    client_id: string,
-    client_secret: string,
-    refresh_token: string
-  }
-  
-  constructor({ client_id, client_secret, refresh_token } = {}) {
+  credentials: Credentials
+
+  constructor({ client_id, client_secret, refresh_token }: Credentials = {}) {
     asserts(client_id, `client_id is required`)
     asserts(client_secret, `client_secret is required`)
     asserts(refresh_token, `refresh_token is required`)
     this.token = ''
     this.credentials = { client_id, client_secret, refresh_token }
   }
-  
+
   setToken() {
     return this.token
     ? false
     : getAccessToken(this.credentials).then(token => this.token = token)
   }
-  
-  async insertItem(src) {
+
+  async insertItem(src: string): Promise<ItemResource> {
     await this.setToken()
     return insertItem({
       token: this.token,
       body: await zipApp(src)
     })
   }
-  
-  async updateItem(id, src) {
+
+  async updateItem(id: string, src: string): Promise<ItemResource> {
     await this.setToken()
     return updateItem({
       token: this.token,
@@ -77,8 +79,8 @@ export default class Chenv {
       id
     })
   }
-  
-  async publishItem(id, trustedTesters) {
+
+  async publishItem(id: string, trustedTesters?: boolean): Promise<ItemResource> {
     await this.setToken()
     return publishItem({
       token: this.token,
@@ -86,8 +88,8 @@ export default class Chenv {
       id,
     })
   }
-  
-  async removeItem(id) {
+
+  async removeItem(id: string): Promise<ItemResource> {
     await this.setToken()
     return updateItem({
       token: this.token,
@@ -95,8 +97,8 @@ export default class Chenv {
       id
     })
   }
-  
-  async checkItem(id, projection) {
+
+  async checkItem(id: string, projection: string): Promise<ItemResource> {
     await this.setToken()
     return checkItem({
       token: this.token,
