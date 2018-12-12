@@ -94,21 +94,22 @@ program
 .option(...optionMap['publish'])
 .option(...optionMap['publishTt'])
 .option(...optionMap['envFile'])
-.action((src, id, { envFile, publish, publishTt }) => {
-  const chenv = new Chenv(loadCredentials(envFile))
-
-  return Promise.resolve().then(() =>
-    !id
-    ? chenv.insertItem(src)
-    : chenv.updateItem(id, src).then((res) =>
-      publish   ? chenv.publishItem(id, false) :
-      publishTt ? chenv.publishItem(id, true)  :
-      res
+.action((src, id, { envFile, publish, publishTt }) =>
+  Promise.resolve().then(() => {
+    const chenv = new Chenv(loadCredentials(envFile))
+    
+    return !id
+    ?
+    chenv.insertItem(src).then(console.log)
+    :
+    chenv.updateItem(id, src).then(console.log).then(() =>
+      publish ? chenv.publishItem(id, false).then(console.log) :
+      publishTt ? chenv.publishItem(id, true).then(console.log) :
+      false
     )
-  )
-  .then(console.log)
+  })
   .catch(errorHandler)
-})
+)
 
 program
 .command(`remove <id>`)
