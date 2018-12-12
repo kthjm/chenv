@@ -95,19 +95,19 @@ program
 .option(...optionMap['publishTt'])
 .option(...optionMap['envFile'])
 .action((src, id, { envFile, publish, publishTt }) =>
-  Promise.resolve().then(() => {
-    const chenv = new Chenv(loadCredentials(envFile))
-    
-    return !id
-    ?
-    chenv.insertItem(src).then(console.log)
-    :
-    chenv.updateItem(id, src).then(console.log).then(() =>
+  Promise.resolve()
+  .then(() =>
+    new Chenv(loadCredentials(envFile))
+  )
+  .then(chenv =>
+    !id
+    ? chenv.insertItem(src).then(console.log)
+    : chenv.updateItem(id, src).then(console.log).then(() =>
       publish ? chenv.publishItem(id, false).then(console.log) :
       publishTt ? chenv.publishItem(id, true).then(console.log) :
       false
     )
-  })
+  )
   .catch(errorHandler)
 )
 
@@ -115,13 +115,17 @@ program
 .command(`remove <id>`)
 .description('not remove but update item as "removed-like"')
 .option(...optionMap['envFile'])
-.action((id, { envFile }) => {
-  const chenv = new Chenv(loadCredentials(envFile))
-
-  return chenv.removeItem(id)
+.action((id, { envFile }) =>
+  Promise.resolve()
+  .then(() =>
+    new Chenv(loadCredentials(envFile))
+  )
+  .then(chenv =>
+    chenv.removeItem(id)
+  )
   .then(console.log)
   .catch(errorHandler)
-})
+)
 
 /*
 
@@ -131,18 +135,22 @@ program
 .option(...optionMap['draft'])
 .option(...optionMap['published'])
 .option(...optionMap['envFile'])
-.action((id, { envFile, draft, published }) => {
-  const chenv = new Chenv(loadCredentials(envFile))
-
-  const projection =
-  draft     ? 'DRAFT'     :
-  published ? 'PUBLISHED' :
-  ''
-
-  return chenv.checkItem(id, projection)
+.action((id, { envFile, draft, published }) =>
+  Promise.resolve()
+  .then(() =>
+    new Chenv(loadCredentials(envFile))
+  )
+  .then(chenv => 
+    chenv.checkItem(
+      id,
+      draft     ? 'DRAFT'     :
+      published ? 'PUBLISHED' :
+      ''
+    )
+  )
   .then(console.log)
   .catch(errorHandler)
-})
+)
 
 */
 
