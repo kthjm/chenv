@@ -51,10 +51,11 @@ Commands:
 **WARNING**: No way to remove item from dashboard, Don't forget to set `id` when update item by `upload`. Or new item that has same name will be created.
 
 ## Config
-chenv has a tiny config. (default: `chenv.config.js` | `packageJson.chenv`)
+chenv has a tiny config.  
+(default: `chenv.config.js` | `"chenv"` in `package.json`)
+
 ```js
 {
-  env: string,
   alias: {
     [name]: {
       src: string,
@@ -63,9 +64,6 @@ chenv has a tiny config. (default: `chenv.config.js` | `packageJson.chenv`)
   }
 }
 ```
-#### env
-`.env` path (default: `.env`)
-
 #### alias
 Used for mapped by `-a, --alias-name` option. It takes priority over arguments like `[src]`.
 

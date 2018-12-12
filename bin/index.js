@@ -72,6 +72,7 @@ program
 .command(`remove [id]`)
 .description('not remove but update item as "removed-like"')
 .option(...options['aliasName'])
+.option(...options['config'])
 .option(...options['env'])
 .action((i, { aliasName, env }) =>
   Promise.resolve().then(() => {
@@ -89,6 +90,8 @@ program
 program
 .command(`check [id]`)
 .description('check item information')
+.option(...options['aliasName'])
+.option(...options['config'])
 .option(...options['draft'])
 .option(...options['published'])
 .option(...options['env'])
