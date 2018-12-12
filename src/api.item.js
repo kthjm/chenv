@@ -1,6 +1,6 @@
 // @flow
 import got from 'got'
-import { throws, asserts, joinParams, toBody } from './util'
+import { asserts, joinParams, toBody } from './util'
 
 const base_uri = `https://www.googleapis.com`
 
