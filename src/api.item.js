@@ -128,7 +128,7 @@ const requestHandler: RequestHandler = (response) => {
   asserts(
     uploadState === 'SUCCESS' ||
     uploadState === 'IN_PROGRESS' ||
-    status.includes('OK'),
+    (Array.isArray(status) && status.includes('OK')),
     JSON.stringify(body)
   )
 
