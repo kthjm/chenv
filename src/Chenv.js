@@ -8,7 +8,8 @@ import {
   updateItem,
   publishItem,
   checkItem,
-  type ItemResource,
+  type UploadResponse,
+  type PublishResponse,
 } from './api.item'
 
 const manifestMap = {
@@ -39,7 +40,7 @@ const zipEmpty = (manifestJson) => {
 type Credentials = {
   client_id: string,
   client_secret: string,
-  refresh_token: string
+  refresh_token: string,
 }
 
 export class Chenv {
@@ -60,7 +61,7 @@ export class Chenv {
     : getAccessToken(this.credentials).then(token => this.token = token)
   }
 
-  async insertItem(src: string): Promise<ItemResource> {
+  async insertItem(src: string): Promise<UploadResponse> {
     await this.setToken()
     return insertItem({
       token: this.token,
@@ -68,7 +69,7 @@ export class Chenv {
     })
   }
 
-  async updateItem(id: string, src: string): Promise<ItemResource> {
+  async updateItem(id: string, src: string): Promise<UploadResponse> {
     await this.setToken()
     return updateItem({
       token: this.token,
@@ -77,7 +78,7 @@ export class Chenv {
     })
   }
 
-  async publishItem(id: string, trustedTesters?: boolean): Promise<ItemResource> {
+  async publishItem(id: string, trustedTesters?: boolean): Promise<PublishResponse> {
     await this.setToken()
     return publishItem({
       token: this.token,
@@ -86,7 +87,7 @@ export class Chenv {
     })
   }
 
-  async removeItem(id: string): Promise<ItemResource> {
+  async removeItem(id: string): Promise<UploadResponse> {
     await this.setToken()
     return updateItem({
       token: this.token,

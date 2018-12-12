@@ -24,18 +24,42 @@ const headers = (access_token) => {
   }
 }
 
-export type ItemResource = {
+type UploadState =
+'SUCCESS'
+| 'IN_PROGRESS'
+| 'FAILURE'
+| 'NOT_FOUND'
+
+export type UploadResponse = {
   kind: string,
   id: string,
   publicKey: string,
-  uploadState: string,
-  itemError: { error_detail: string }[]
+  uploadState: UploadState,
+  itemError: { error_detail: string }[],
+}
+
+type PublishStatus =
+'OK' // not documented but exist
+| 'NOT_AUTHORIZED'
+| 'INVALID_DEVELOPER'
+| 'DEVELOPER_NO_OWNERSHIP'
+| 'DEVELOPER_SUSPENDED'
+| 'ITEM_NOT_FOUND'
+| 'ITEM_PENDING_REVIEW'
+| 'ITEM_TAKEN_DOWN'
+| 'PUBLISHER_SUSPENDED'
+
+export type PublishResponse = {
+  kind: string,
+  item_id: string,
+  status: PublishStatus[],
+  statusDetail: string[],
 }
 
 export const insertItem = ({ token, body }: {
   token: string,
   body: ReadableStream
-} = {}): Promise<ItemResource> => {
+} = {}): Promise<UploadResponse> => {
   asserts(body, `[chenv] body is required`)
 
   return got(insert_uri, {
@@ -50,7 +74,7 @@ export const updateItem = ({ token, id, body }: {
   token: string,
   id: string,
   body: ReadableStream
-} = {}): Promise<ItemResource> => {
+} = {}): Promise<UploadResponse> => {
   asserts(id, `[chenv] id is ${id}`)
   asserts(body, `[chenv] body is required`)
 
@@ -66,7 +90,7 @@ export const publishItem = ({ token, id, target }: {
   token: string,
   id: string,
   target: string
-} = {}): Promise<ItemResource> => {
+} = {}): Promise<PublishResponse> => {
   asserts(id, `[chenv] id is ${id}`)
   asserts(target, `[chenv] target is ${target}`)
 
@@ -83,7 +107,7 @@ export const checkItem = ({ token, id, projection }: {
   token: string,
   id: string,
   projection?: string
-} = {}): Promise<ItemResource> => {
+} = {}): Promise<UploadResponse> => {
   asserts(id, `[chenv] id is ${id}`)
 
   return got(check_uri(id, projection), {
@@ -93,12 +117,20 @@ export const checkItem = ({ token, id, projection }: {
   .then(requestHandler)
 }
 
-const requestHandler = (res: { body: ItemResource | string }): ItemResource => {
-  const body = toBody(res)
+type RequestHandler = (response: {
+  body: UploadResponse | PublishResponse | string
+}) => UploadResponse | PublishResponse
 
-  if (body.uploadState !== 'SUCCESS') {
-    throws(JSON.stringify(body))
-  }
+const requestHandler: RequestHandler = (response) => {
+  const body = toBody(response)
+  const { uploadState, status } = body
+
+  asserts(
+    uploadState === 'SUCCESS' ||
+    uploadState === 'IN_PROGRESS' ||
+    status.includes('OK'),
+    JSON.stringify(body)
+  )
 
   return body
 }
