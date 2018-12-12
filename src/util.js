@@ -1,5 +1,4 @@
 // @flow
-
 type AnyObject = { [key: string]: any }
 
 export const toBody = ({ body }: { body: AnyObject | string }): AnyObject =>
