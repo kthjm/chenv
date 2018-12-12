@@ -67,7 +67,10 @@ chenv has a tiny config. (default: `chenv.config.js` | `packageJson.chenv`)
 `.env` path (default: `.env`)
 
 #### alias
-object mapped by `-a, --alias-name` option. It takes priority over arguments like `[src]`.
+Used for mapped by `-a, --alias-name` option. It takes priority over arguments like `[src]`.
+
+Not sure but may be helpful in the case that manages multi items clearly.
+
 ```shell
 chenv upload -a [name]
 chenv remove -a [name]
