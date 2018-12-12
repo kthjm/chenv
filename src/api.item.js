@@ -1,6 +1,6 @@
 // @flow
 import got from 'got'
-import { throws, asserts, joinParams, toBody } from './util'
+import { asserts, joinParams, toBody } from './util'
 
 const base_uri = `https://www.googleapis.com`
 
@@ -38,24 +38,6 @@ export type UploadResponse = {
   itemError: { error_detail: string }[],
 }
 
-type PublishStatus =
-'OK' // not documented but exist
-| 'NOT_AUTHORIZED'
-| 'INVALID_DEVELOPER'
-| 'DEVELOPER_NO_OWNERSHIP'
-| 'DEVELOPER_SUSPENDED'
-| 'ITEM_NOT_FOUND'
-| 'ITEM_PENDING_REVIEW'
-| 'ITEM_TAKEN_DOWN'
-| 'PUBLISHER_SUSPENDED'
-
-export type PublishResponse = {
-  kind: string,
-  item_id: string,
-  status: PublishStatus[],
-  statusDetail: string[],
-}
-
 export const insertItem = ({ token, body }: {
   token: string,
   body: ReadableStream
@@ -86,23 +68,6 @@ export const updateItem = ({ token, id, body }: {
   .then(requestHandler)
 }
 
-export const publishItem = ({ token, id, target }: {
-  token: string,
-  id: string,
-  target: string
-} = {}): Promise<PublishResponse> => {
-  asserts(id, `[chenv] id is ${id}`)
-  asserts(target, `[chenv] target is ${target}`)
-
-  return got(publish_uri(id), {
-    method: 'POST',
-    headers: headers(token),
-    json: true,
-    body: { target }
-  })
-  .then(requestHandler)
-}
-
 export const checkItem = ({ token, id, projection }: {
   token: string,
   id: string,
@@ -117,20 +82,46 @@ export const checkItem = ({ token, id, projection }: {
   .then(requestHandler)
 }
 
-type RequestHandler = (response: {
-  body: UploadResponse | PublishResponse | string
-}) => UploadResponse | PublishResponse
-
-const requestHandler: RequestHandler = (response) => {
-  const body = toBody(response)
-  const { uploadState, status } = body
-
+const requestHandler = ({ body }: { body: UploadResponse }): UploadResponse => {
   asserts(
-    uploadState === 'SUCCESS' ||
-    uploadState === 'IN_PROGRESS' ||
-    (Array.isArray(status) && status.includes('OK')),
+    body.uploadState === 'SUCCESS' ||
+    body.uploadState === 'IN_PROGRESS',
     JSON.stringify(body)
   )
-
   return body
+}
+
+type PublishStatus =
+'OK' // not documented but exist
+| 'NOT_AUTHORIZED'
+| 'INVALID_DEVELOPER'
+| 'DEVELOPER_NO_OWNERSHIP'
+| 'DEVELOPER_SUSPENDED'
+| 'ITEM_NOT_FOUND'
+| 'ITEM_PENDING_REVIEW'
+| 'ITEM_TAKEN_DOWN'
+| 'PUBLISHER_SUSPENDED'
+
+export type PublishResponse = {
+  kind: string,
+  item_id: string,
+  status: PublishStatus[],
+  statusDetail: string[],
+}
+
+export const publishItem = ({ token, id, target }: {
+  token: string,
+  id: string,
+  target: string
+} = {}): Promise<PublishResponse> => {
+  asserts(id, `[chenv] id is ${id}`)
+  asserts(target, `[chenv] target is ${target}`)
+
+  return got(publish_uri(id), {
+    method: 'POST',
+    headers: headers(token),
+    json: true,
+    body: { target }
+  })
+  .then(toBody)
 }

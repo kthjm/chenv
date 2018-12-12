@@ -9,6 +9,7 @@ const redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
 
 export const authURL = (client_id: string): string => {
   asserts(client_id, `[chenv] client_id is required`)
+  
   return auth_uri + joinParams({
     client_id,
     redirect_uri,
@@ -25,6 +26,7 @@ export const getRefreshToken = ({ client_id, client_secret, code }: {
   asserts(client_id, `[chenv] client_id is required`)
   asserts(client_secret, `[chenv] client_secret is required`)
   asserts(code, `[chenv] code is required`)
+  
   return got(token_uri, {
     method: 'POST',
     json: true,
@@ -48,6 +50,7 @@ export const getAccessToken = ({ client_id, client_secret, refresh_token }: {
   asserts(client_id, `[chenv] client_id is required`)
   asserts(client_secret, `[chenv] client_secret is required`)
   asserts(refresh_token, `[chenv] refresh_token is required`)
+  
   return got(token_uri, {
     method: 'POST',
     json: true,

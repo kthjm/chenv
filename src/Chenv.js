@@ -98,7 +98,7 @@ export class Chenv {
 
   /*
   ref: https://developer.chrome.com/webstore/webstore_api/items/get
-  async checkItem(id: string, projection: string): Promise<ItemResource> {
+  async checkItem(id: string, projection: string): Promise<UploadResponse> {
     await this.setToken()
     return checkItem({
       token: this.token,
