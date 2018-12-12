@@ -1,55 +1,10 @@
 import program from 'commander'
 import enquirer from 'enquirer'
-import dotenv from 'dotenv'
 import opn from 'opn'
-import { join } from 'path'
+import options from './options'
+import { loadCredentials, loadConfig } from './load'
 import { Chenv, authURL, getRefreshToken } from '..'
 import packageJson from '../package.json'
-
-const optionMap = {
-  envFile: [
-    '-e, --env-file <file>',
-    'dotenv filepath storing environment variables [default = ".env"]'
-  ],
-  app: [
-    '-a, --app <name..>',
-    'specify the app to open the url (sindresorhus/opn)'
-  ],
-  publish: [
-    '-p, --publish',
-    `(ignored when !id) publish item directly after update`
-  ],
-  publishTt: [
-    '-t, --publish-tt',
-    `(ignored when !id) publish item directly after update to only "trustedTesters"`
-  ],
-  draft: [
-    '-d, --draft',
-    `projection=DRAFT`
-  ],
-  published: [
-    '-p, --published',
-    `projection=PUBLISHED`
-  ],
-}
-
-const loadCredentials = (envFile) => {
-  const { error } = dotenv.config({
-    path: (envFile && typeof envFile === 'string')
-    ? envFile
-    : join(process.cwd(), '.env')
-  })
-
-  if (error) console.warn(error.message)
-
-  const {
-    CLIENT_ID: client_id,
-    CLIENT_SECRET: client_secret,
-    REFRESH_TOKEN: refresh_token,
-  } = process.env
-
-  return { client_id, client_secret, refresh_token }
-}
 
 const errorHandler = (err) => {
   console.error(err)
@@ -61,11 +16,11 @@ program.version(packageJson.version)
 program
 .command(`auth`)
 .description('get REFRESH_TOKEN easily')
-.option(...optionMap['app'])
-.option(...optionMap['envFile'])
-.action(({ app, envFile }) =>
+.option(...options['app'])
+.option(...options['env'])
+.action(({ app, env }) =>
   Promise.resolve().then(async () => {
-    const { client_id, client_secret } = loadCredentials(envFile)
+    const { client_id, client_secret } = loadCredentials(env)
 
     if (!client_id || !client_secret) {
       return console.log('\n > Please set CLIENT_ID and CLIENT_SECRET\n')
@@ -89,66 +44,67 @@ program
 )
 
 program
-.command(`upload <src> [id]`)
+.command(`upload [src] [id]`)
 .description('upload item (!id ? insert : update)')
-.option(...optionMap['publish'])
-.option(...optionMap['publishTt'])
-.option(...optionMap['envFile'])
-.action((src, id, { envFile, publish, publishTt }) =>
-  Promise.resolve()
-  .then(() =>
-    new Chenv(loadCredentials(envFile))
-  )
-  .then(chenv =>
-    !id
+.option(...options['aliasName'])
+.option(...options['publish'])
+.option(...options['publishTt'])
+.option(...options['config'])
+.option(...options['env'])
+.action((s, i, { aliasName, publish, publishTt, config, env }) =>
+  Promise.resolve().then(() => {
+    const chenv = new Chenv(loadCredentials(env))
+    const { alias = {} } = loadConfig(config)
+    const { src, id } = alias[aliasName] || { src: s, id: i }
+    
+    return !id
     ? chenv.insertItem(src).then(console.log)
     : chenv.updateItem(id, src).then(console.log).then(() =>
       publish ? chenv.publishItem(id, false).then(console.log) :
       publishTt ? chenv.publishItem(id, true).then(console.log) :
       false
     )
-  )
+  })
   .catch(errorHandler)
 )
 
 program
-.command(`remove <id>`)
+.command(`remove [id]`)
 .description('not remove but update item as "removed-like"')
-.option(...optionMap['envFile'])
-.action((id, { envFile }) =>
-  Promise.resolve()
-  .then(() =>
-    new Chenv(loadCredentials(envFile))
-  )
-  .then(chenv =>
-    chenv.removeItem(id)
-  )
-  .then(console.log)
+.option(...options['aliasName'])
+.option(...options['env'])
+.action((i, { aliasName, env }) =>
+  Promise.resolve().then(() => {
+    const chenv = new Chenv(loadCredentials(env))
+    const { alias = {} } = loadConfig(config)
+    const { id } = alias[aliasName] || { id: i }
+    
+    return chenv.removeItem(id).then(console.log)
+  })
   .catch(errorHandler)
 )
 
 /*
 
 program
-.command(`check <id>`)
+.command(`check [id]`)
 .description('check item information')
-.option(...optionMap['draft'])
-.option(...optionMap['published'])
-.option(...optionMap['envFile'])
-.action((id, { envFile, draft, published }) =>
-  Promise.resolve()
-  .then(() =>
-    new Chenv(loadCredentials(envFile))
-  )
-  .then(chenv => 
-    chenv.checkItem(
-      id,
-      draft     ? 'DRAFT'     :
-      published ? 'PUBLISHED' :
-      ''
-    )
-  )
-  .then(console.log)
+.option(...options['draft'])
+.option(...options['published'])
+.option(...options['env'])
+.action((i, { env, draft, published }) =>
+  Promise.resolve().then(() => {
+    const chenv = new Chenv(loadCredentials(env))
+    const { alias = {} } = loadConfig(config)
+    const { id } = alias[aliasName] || { id: i }
+    
+    const projection =
+    draft     ? 'DRAFT'     :
+    published ? 'PUBLISHED' :
+    ''
+    
+    return chenv.checkItem(id, projection).then(console.log)
+  })
   .catch(errorHandler)
 )
 
