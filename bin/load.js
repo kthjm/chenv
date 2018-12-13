@@ -34,7 +34,8 @@ export const loadConfig = (configValue) => {
     } catch(err) {
       if (!err.message.includes(CONFIG)) throw err
       try {
-        config = require(join(cwd, 'package.json')).chenv
+        const { chenv = {} } = require(join(cwd, 'package.json')) || {}
+        config = chenv
       } catch(err) {
         if (!err.message.includes('package.json')) throw err
       }
