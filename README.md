@@ -51,7 +51,7 @@ Commands:
 **WARNING**: No way to remove item from dashboard, Don't forget to set `id` when update item by `upload`. Or new item that has same name will be created.
 
 ## Config
-chenv has a tiny config. In default `chenv.config.js` or `package.json ("chenv")` that sits in the `process.cwd()` is used.
+chenv has a tiny config. In default `chenv.config.js` or `"chenv" in package.json` that sits in the `process.cwd()` is used.
 ```js
 {
   alias: {
