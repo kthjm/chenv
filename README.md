@@ -51,9 +51,7 @@ Commands:
 **WARNING**: No way to remove item from dashboard, Don't forget to set `id` when update item by `upload`. Or new item that has same name will be created.
 
 ## Config
-chenv has a tiny config.  
-(default: `chenv.config.js` | `"chenv"` in `package.json`)
-
+chenv has a tiny config. In default, `chenv.config.js` or `package.json ("chenv")` that sits in the `process.cwd()` is used.
 ```js
 {
   alias: {
@@ -65,13 +63,12 @@ chenv has a tiny config.
 }
 ```
 #### alias
-Used for mapped by `-a, --alias-name` option. It takes priority over arguments like `[src]`.
+Used for mapped by `-a, --alias-name` option.
 
 Not sure but may be helpful in the case that manages multi items clearly.
-
 ```shell
-chenv upload -a [name]
-chenv remove -a [name]
+chenv upload -a item1,item2
+chenv remove -a item1,item2
 ```
 
 ## Ref

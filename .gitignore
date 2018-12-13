@@ -1,5 +1,6 @@
 .dist/
 flow-typed/
+chenv.config.js
 
 # Logs
 logs

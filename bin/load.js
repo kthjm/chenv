@@ -5,10 +5,10 @@ const cwd = process.cwd()
 
 export const CONFIG = 'chenv.config.js'
 
-export const loadCredentials = (env) => {
+export const loadCredentials = (envValue) => {
   const { error } = dotenv.config({
-    path: (env && typeof env === 'string')
-    ? env
+    path: (envValue && typeof envValue === 'string')
+    ? envValue
     : join(cwd, '.env')
   })
 
@@ -44,3 +44,10 @@ export const loadConfig = (configValue) => {
   
   return 'default' in config ? config['default'] : config
 }
+
+/*
+export const loadRequire = (requireValue) => 
+  requireValue
+  .split(',')
+  .forEach(moduleName => require(moduleName))
+*/

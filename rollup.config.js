@@ -1,6 +1,7 @@
 import Flow from 'rollup-plugin-flow'
 import Babel from 'rollup-plugin-babel'
 import AutoExternal from 'rollup-plugin-auto-external'
+import Cleanup from 'rollup-plugin-cleanup'
 import Prettier from 'rollup-plugin-prettier'
 
 const shebang = '#!/usr/bin/env node'
@@ -16,6 +17,10 @@ const babel = Babel({
 const autoexternal = AutoExternal({
   builtins: true,
   dependencies: true
+})
+
+const cleanup = Cleanup({
+  
 })
 
 const prettier = Prettier({
@@ -37,6 +42,7 @@ export default [
       flow,
       babel,
       autoexternal,
+      cleanup,
       prettier
     ]
   },
@@ -54,6 +60,7 @@ export default [
     plugins: [
       babel,
       autoexternal,
+      cleanup,
       prettier
     ]
   }
