@@ -68,7 +68,7 @@ export const upload = (src, id, options) => action(() => {
   
   const items = [
     { src, id },
-    ...aliasItems(itemMap, all, aliasName)
+    ...createItems(itemMap, all, aliasName)
   ].filter(({ src }) => src)
   
   return order(items, ({ src, id }) =>
@@ -98,7 +98,7 @@ export const remove = (id, options) => action(() => {
   
   const items = [
     { id },
-    ...aliasItems(itemMap, all, aliasName)
+    ...createItems(itemMap, all, aliasName)
   ].filter(({ id }) => id)
   
   return order(items, ({ id }) =>
@@ -124,7 +124,7 @@ export const check = (id, options) => action(() => {
   
   const items = [
     { id, projection: draft ? 'DRAFT' : published ? 'PUBLISHED' : '' },
-    ...aliasItems(itemMap, all, aliasName)
+    ...createItems(itemMap, all, aliasName)
   ].filter(({ id }) => id)
   
   return order(items, ({ id, projection }) =>
@@ -132,7 +132,7 @@ export const check = (id, options) => action(() => {
   )
 })
 
-const aliasItems = (map, all, aliasName) =>
+const createItems = (map, all, aliasName) =>
   all
   ? map2items(map)
   : alias2items(aliasName, map)
