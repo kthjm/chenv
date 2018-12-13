@@ -63,12 +63,13 @@ chenv has a tiny config. In default `chenv.config.js` or `"chenv" in package.jso
 }
 ```
 #### alias
-Used for mapped by `-a, --alias-name` option.
+Used for mapped by `-a, --alias-name` and `--all` option.
 
 Not sure but may be helpful in the case that manages multi items clearly.
 ```shell
 chenv upload -a item1,item2
 chenv remove -a item1,item2
+chenv upload --all
 ```
 
 ## Ref

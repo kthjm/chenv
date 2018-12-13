@@ -9,12 +9,16 @@ const options = {
     'env filepath (default: ".env")'
   ],
   app: [
-    '-a, --app <name..>',
+    '--app <name..>',
     'specify the app to open the url (sindresorhus/opn)'
   ],
   aliasName: [
     '-a, --alias-name <name..>',
     'config.alias[name] will be used'
+  ],
+  all: [
+    '--all',
+    'config.alias will be used'
   ],
   config: [
     '-c, --config <file>',
@@ -51,6 +55,7 @@ program
 .command(`upload [src] [id]`)
 .description('upload item (!id ? insert : update)')
 .option(...options['aliasName'])
+.option(...options['all'])
 .option(...options['publish'])
 .option(...options['publishTt'])
 .option(...options['config'])
@@ -61,6 +66,7 @@ program
 .command(`remove [id]`)
 .description('not remove but update item as "removed-like"')
 .option(...options['aliasName'])
+.option(...options['all'])
 .option(...options['config'])
 .option(...options['env'])
 .action(actions['remove'])
@@ -70,6 +76,7 @@ program
 .command(`check [id]`)
 .description('check item information')
 .option(...options['aliasName'])
+.option(...options['all'])
 .option(...options['draft'])
 .option(...options['published'])
 .option(...options['config'])

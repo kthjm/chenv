@@ -21,6 +21,14 @@ const alias2items = (aliasName, map) =>
   .filter(name => name)
   .map(name => ({ name, ...map[name] }))
 
+const map2items = (map) =>
+  Object
+  .entries(map)
+  .map(([ name, item ]) => ({ name, ...item }))
+
+const aliasItems = (map, all, aliasName) =>
+  all ? map2items(map) : alias2items(aliasName, map)
+
 const promiseOrder = (args, action, index = 0) =>
   !args[index]
   ?
@@ -52,7 +60,16 @@ export const auth = ({ app, env }) => frame(async () => {
   return console.log(`\n > REFRESH_TOKEN=${refresh_token}\n`)
 })
   
-export const upload = (src, id, { aliasName, publish, publishTt, config, env }) => frame(() => {
+export const upload = (src, id, options) => frame(() => {
+  const {
+    aliasName,
+    all,
+    publish,
+    publishTt,
+    config,
+    env
+  } = options
+  
   const chenv = new Chenv(loadCredentials(env))
   
   const {
@@ -61,7 +78,7 @@ export const upload = (src, id, { aliasName, publish, publishTt, config, env }) 
   
   const items = [
     { src, id },
-    ...alias2items(aliasName, aliasMap)
+    ...aliasItems(aliasMap, all, aliasName)
   ].filter(({ src }) => src)
   
   return !items.length
@@ -78,7 +95,14 @@ export const upload = (src, id, { aliasName, publish, publishTt, config, env }) 
   })
 })
 
-export const remove = (id, { aliasName, config, env }) => frame(() => {
+export const remove = (id, options) => frame(() => {
+  const {
+    aliasName,
+    all,
+    config,
+    env
+  } = options
+  
   const chenv = new Chenv(loadCredentials(env))
   
   const {
@@ -87,7 +111,7 @@ export const remove = (id, { aliasName, config, env }) => frame(() => {
   
   const items = [
     { id },
-    ...alias2items(aliasName, aliasMap)
+    ...aliasItems(aliasMap, all, aliasName)
   ].filter(({ id }) => id)
   
   return !items.length
@@ -98,7 +122,16 @@ export const remove = (id, { aliasName, config, env }) => frame(() => {
   })
 })
 
-export const check = (id, { aliasName, draft, published, config, env }) => frame(() => {
+export const check = (id, options) => frame(() => {
+  const {
+    aliasName,
+    all,
+    draft,
+    published,
+    config,
+    env
+  } = options
+  
   const chenv = new Chenv(loadCredentials(env))
   
   const {
@@ -107,7 +140,7 @@ export const check = (id, { aliasName, draft, published, config, env }) => frame
   
   const items = [
     { id, projection: draft ? 'DRAFT' : published ? 'PUBLISHED' : '' },
-    ...alias2items(aliasName, aliasMap)
+    ...aliasItems(aliasMap, all, aliasName)
   ].filter(({ id }) => id)
   
   return !items.length
