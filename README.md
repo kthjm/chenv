@@ -12,6 +12,7 @@ cli tool to manage Chrome Web Store item.
 #### Why?
 - no need zip
 - credentials in `.env` is auto loaded
+- capable of manage multiple items
 
 ## Setup
 
@@ -68,7 +69,6 @@ Used for mapped by `-a, --alias-name` and `--all` option.
 Not sure but may be helpful in the case that manages multi items clearly.
 ```shell
 chenv upload -a item1,item2
-chenv remove -a item1,item2
 chenv upload --all
 ```
 
