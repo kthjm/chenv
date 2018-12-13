@@ -55,7 +55,7 @@ Commands:
 chenv has a tiny config. In default `chenv.config.js` or `"chenv" in package.json` that sits in the `process.cwd()` is used.
 ```js
 {
-  alias: {
+  items: {
     [name]: {
       src: string,
       id: string,
@@ -63,7 +63,7 @@ chenv has a tiny config. In default `chenv.config.js` or `"chenv" in package.jso
   }
 }
 ```
-#### alias
+#### items
 Used for mapped by `-a, --alias-name` and `--all` option.
 
 Not sure but may be helpful in the case that manages multi items clearly.
