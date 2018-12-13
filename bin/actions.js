@@ -71,7 +71,7 @@ export const upload = (src, id, options) => action(() => {
     ...aliasItems(itemMap, all, aliasName)
   ].filter(({ src }) => src)
   
-  return order(items, ({ name, src, id }) =>
+  return order(items, ({ src, id }) =>
     !id
     ? chenv.insertItem(src).then(console.log)
     : chenv.updateItem(id, src).then(console.log).then(() =>
@@ -101,7 +101,7 @@ export const remove = (id, options) => action(() => {
     ...aliasItems(itemMap, all, aliasName)
   ].filter(({ id }) => id)
   
-  return order(items, ({ name, id }) =>
+  return order(items, ({ id }) =>
     chenv.removeItem(id).then(console.log)
   )
 })
@@ -127,7 +127,7 @@ export const check = (id, options) => action(() => {
     ...aliasItems(itemMap, all, aliasName)
   ].filter(({ id }) => id)
   
-  return order(items, ({ name, id, projection }) =>
+  return order(items, ({ id, projection }) =>
     chenv.checkItem(id, projection).then(console.log)
   )
 })
