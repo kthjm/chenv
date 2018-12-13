@@ -68,8 +68,8 @@ Used for mapped by `-a, --alias-name` and `--all` option.
 
 Not sure but may be helpful in the case that manages multi items clearly.
 ```shell
-chenv upload|remove -a item1,item2
-chenv upload|remove --all
+chenv upload -a item1,item2
+chenv upload --all
 ```
 
 ## Ref
