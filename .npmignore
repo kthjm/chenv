@@ -7,6 +7,7 @@ test/
 .flowconfig
 .gitignore
 .travis.yml
+codecov.yml
 babel.config.js
 rollup.config.js
 yarn.lock
