@@ -11,7 +11,8 @@ cli tool to manage Chrome Web Store item.
 
 #### Why?
 - no need zip
-- using `.env` as config file
+- credentials in `.env` is auto loaded
+- capable of manage multiple items
 
 ## Setup
 
@@ -45,10 +46,31 @@ Options:
 
 Commands:
   auth [options]               get REFRESH_TOKEN easily
-  upload [options] <src> [id]  upload item (!id ? insert : update)
-  remove [options] <id>        not remove but update item as "removed-like"
+  upload [options] [src] [id]  upload item (!id ? insert : update)
+  remove [options] [id]        not remove but update item as "removed-like"
 ```
 **WARNING**: No way to remove item from dashboard, Don't forget to set `id` when update item by `upload`. Or new item that has same name will be created.
+
+## Config
+chenv has a tiny config. In default `chenv.config.js` or `"chenv" in package.json` that sits in the `process.cwd()` is used.
+```js
+{
+  alias: {
+    [name]: {
+      src: string,
+      id: string,
+    }
+  }
+}
+```
+#### alias
+Used for mapped by `-a, --alias-name` and `--all` option.
+
+Not sure but may be helpful in the case that manages multi items clearly.
+```shell
+chenv upload -a item1,item2
+chenv upload --all
+```
 
 ## Ref
 - [Using the Chrome Web Store Publish API](https://developer.chrome.com/webstore/using_webstore_api)

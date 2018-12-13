@@ -1,6 +1,6 @@
 {
   "name": "chenv",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "cli to manage Chrome Web Store item",
   "repository": "https://github.com/kthjm/chenv",
   "author": "kthjm <toxictoxer@gmail.com>",
@@ -68,6 +68,7 @@
     "rollup": "^0.67.4",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-cleanup": "^3.0.0",
     "rollup-plugin-flow": "^1.1.1",
     "rollup-plugin-prettier": "^0.5.0",
     "sinon": "^7.1.1"
