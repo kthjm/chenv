@@ -82,7 +82,8 @@ export const checkItem = ({ token, id, projection }: {
   .then(requestHandler)
 }
 
-const requestHandler = ({ body }: { body: UploadResponse }): UploadResponse => {
+const requestHandler = (res: { body: UploadResponse | string }): UploadResponse => {
+  const body = toBody(res)
   asserts(
     body.uploadState === 'SUCCESS' ||
     body.uploadState === 'IN_PROGRESS',
