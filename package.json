@@ -1,6 +1,6 @@
 {
   "name": "chenv",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "cli to manage Chrome Web Store item",
   "repository": "https://github.com/kthjm/chenv",
   "author": "kthjm <toxictoxer@gmail.com>",
